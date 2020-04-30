@@ -21,4 +21,6 @@ jobs:
       run: |
         swift package generate-xcodeproj
         xcodebuild -quiet -parallel-testing-enabled YES -scheme ValidatableTextField-Package -enableCodeCoverage YES build test
-
+    - name: Code Coverage
+      run:
+          bash <(curl -s https://codecov.io/bash) -J ValidatableTextField -t ${{secrets.CODECOV_TOKEN}}
