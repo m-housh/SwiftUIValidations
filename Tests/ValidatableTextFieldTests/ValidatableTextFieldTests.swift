@@ -20,7 +20,7 @@ struct ContentView: View, Inspectable {
 
             // This should always evaluate.
             TextField("Not Validatable", text: $text)
-                .errorModifier(value: $text, keyPath: \.notEmpty)
+                .errorModifier(value: $text, validator: \.notEmpty)
 
         }
         .onReceive(inspection.notice) { self.inspection.visit(self, $0) }
