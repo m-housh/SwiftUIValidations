@@ -8,11 +8,15 @@
 import Foundation
 
 /// A namespace for validators to be added to.
-public struct Validators<T> {
+public struct Validators<Type> {
     public init() { }
+
+    static func validator(for keyPath: KeyPath<Validators<Type>, Validator<Type>>) -> Validator<Type> {
+        Self()[keyPath: keyPath]
+    }
 }
 
-extension Validators where T == String {
+extension Validators where Type == String {
 
     public var notEmpty: Validator<String> {
         Validator(errorText: "Required") { (string: String) -> Bool in

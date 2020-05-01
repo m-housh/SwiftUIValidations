@@ -8,6 +8,8 @@
 import SwiftUI
 import Combine
 
+/// A text field that is able to validate it's value once it's been changed.  By default the text field will not evaluate until the field
+/// has been entered, then exited for the first time.
 public struct ValidatableTextField: View {
 
     /// The placeholder text for the field.
@@ -33,6 +35,15 @@ public struct ValidatableTextField: View {
     /// The validator for the field.
     let validator: Validator<String>
 
+    /// Create a new validatable text field.
+    ///
+    /// - Parameters:
+    ///     - placeholder: The placeholder text that shows inside the field when the value is empty.
+    ///     - text: A binding to the text field's value.
+    ///     - validator: A `Validator` to use to validate the text.
+    ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
+    ///     - onEditingChanged:  Passed to the actual `TextField`
+    ///     - onCommit:  Passed to the actual `TextField`
     public init(
         _ placeholder: String = "",
         text: Binding<String>,
@@ -74,3 +85,33 @@ public struct ValidatableTextField: View {
     }
 }
 
+extension ValidatableTextField {
+
+    /// Create a new validatable text field.
+    ///
+    /// - Parameters:
+    ///     - placeholder: The placeholder text that shows inside the field when the value is empty.
+    ///     - text: A binding to the text field's value.
+    ///     - keyPath: A `Validators` key path to derive the validator from.
+    ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
+    ///     - onEditingChanged:  Passed to the actual `TextField`
+    ///     - onCommit:  Passed to the actual `TextField`
+    public init(
+        _ placeholder: String = "",
+        text: Binding<String>,
+        validator keyPath: KeyPath<Validators<String>, Validator<String>>,
+        alwaysEvaluate: Bool = false,
+        onEditingChanged: @escaping (Bool) -> () = { _ in },
+        onCommit: @escaping () -> () = { }
+    ) {
+        let validator = Validators<String>.validator(for: keyPath)
+        self.init(
+            placeholder,
+            text: text,
+            validator: validator,
+            alwaysEvaluate: alwaysEvaluate,
+            onEditingChanged: onEditingChanged,
+            onCommit: onCommit
+        )
+    }
+}

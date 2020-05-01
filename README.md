@@ -20,9 +20,82 @@ Add to your project using `swift package manager`.
 
 There are 4 main things this package exposes. `Validator`, `Validators`, `ValidatableTextField`, and an `errorModifier` view modifiier.
 
-The first `Validator` is a type that can validate a `Binding` value on a view.  The second `Validators` is a namespace to extend and add your own `Validator`'s to.   There is one default validator, shown below.
+### ValidatableTextField
+
+The validatable text field is similar to a norma text field however it adds the abilitiy to validate the text value, and display an error message(s) if invalid.  There are two ways to create a validatable text field.
+
+#### Key Path
+
+Use a key path on the `Validators` to derive the validator for the text - field
+
+``` swift
+    
+struct ContentView: View {
+    
+    @State private var nameText: String
+    
+    var body: some View {
+        Form {
+            ValidatableTextField("Name", text: $nameText, validator: \.notEmpty)
+        }
+    }
+}
+```
+
+#### Supplied Validator
+
+You can also provide your own validator.
+
+```swift
+struct ContentView: View {
+    
+    @State private var nameText: String
+    private var nameValidator = Validator<String>(errorText: "My custom name error.") { string in 
+        // do validation here, return `true` if valid and `false` if invalid.
+        return !string.isEmpty
+    }
+    
+    var body: some View {
+        Form {
+            ValidatableTextField("Name", text: $nameText, validator: nameValidator)
+        }
+    }
+}
+```
+
+### errorModifier
+
+The `errorModifier` is an extension on `View` and will add the ability for any view to be validated.  There are several ways to create add an error modifier to a view, below is just one example of using a key path on `Validators` to derive the validation from.
+
+```swift
+
+struct MyValidatableView: View {
+
+    // control when the error is evaluated.
+    @State private var shouldEvaluate: Bool = true
+    
+    @State private var value: String = ""
+    
+    var body: some View {
+        Form {
+            // display the error in the section header.
+            Section(header: errorView) {
+                TextField("Value", text: $value)
+            }
+        }
+    }
+    
+    private var errorView: some View {
+        Text("")
+            .errorModifier(value: $value, shouldEvaluate: $shouldEvaluate, validator: \.notEmpty)
+    }
+}
+
+```
 
 ### Validators
+
+The `Validators` is a namespace to extend and add your own `Validator`'s to.   There is one default validator, shown below.
 
 ``` swift
 
@@ -45,6 +118,8 @@ extension Validators where T == String {
 ```
 
 ### Validator
+
+`Validator` is a type that can validate a `Binding` value on a view.  
 
 A validator holds the text to be displayed and the validation method.  A validator also has the ability to be combined with other validators, making a chain of error messages that will be displayed, depending on the result.
 

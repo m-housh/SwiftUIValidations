@@ -11,14 +11,27 @@ import Combine
 
 struct ErrorViewModifier<Value>: ViewModifier {
 
+    /// The value to validate.
     @Binding var value: Value
+
+    /// Whether we should validate the value or not.
     @Binding var shouldEvaluate: Bool
+
+    /// The current errors from validation.
     @State private var errors: [String] = []
+
+    /// The validator used to validate the value.
     private let validator: Validator<Value>
 
     // Used for inspection testing.
     internal var didAppear: ((Self.Body) -> Void)?
 
+    /// Create a new error modifier.
+    ///
+    /// - Parameters:
+    ///     - value: The value to evaluate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - validator: The validator for the value.
     init(
         value: Binding<Value>,
         shouldEvaluate: Binding<Bool>,
@@ -29,6 +42,13 @@ struct ErrorViewModifier<Value>: ViewModifier {
         self.validator = validator
     }
 
+    /// Create a new error modifier.
+    ///
+    /// - Parameters:
+    ///     - errors: The error text(s) to display on failed validation.
+    ///     - value: The value to evaluate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - validate: A method to validate the value.
     init(
         errors: [String],
         value: Binding<Value>,
@@ -69,6 +89,13 @@ struct ErrorViewModifier<Value>: ViewModifier {
 
 extension View {
 
+    /// Add an error modifier / validation to a view.
+    ///
+    /// - Parameters:
+    ///     - errors: The error text(s) to display on failed validation.
+    ///     - value: The value to evaluate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - validate: A method to validate the value.
     public func errorModifer<V>(
         errors: [String],
         value: Binding<V>,
@@ -85,20 +112,33 @@ extension View {
         )
     }
 
+
+    /// Add an error modifier / validation to a view.
+    ///
+    /// - Parameters:
+    ///     - value: The value to evaluate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - keyPath: A key path on `Validators` to derive the validation method from.
     public func errorModifier<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
-        keyPath: KeyPath<Validators<V>, Validator<V>>
+        validator keyPath: KeyPath<Validators<V>, Validator<V>>
     ) -> some View {
         self.modifier(
             ErrorViewModifier(
                 value: value,
                 shouldEvaluate: shouldEvaluate,
-                validator: Validators<V>()[keyPath: keyPath]
+                validator: Validators<V>.validator(for: keyPath)
             )
         )
     }
 
+    /// Add an error modifier / validation to a view.
+    ///
+    /// - Parameters:
+    ///     - value: The value to evaluate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - validator: A `Validator` used to validate the value.
     public func errorModifier<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),

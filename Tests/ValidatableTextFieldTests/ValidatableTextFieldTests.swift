@@ -14,7 +14,9 @@ struct ContentView: View, Inspectable {
     var body: some View {
         VStack {
             // Can't test the error modifier because we can't enter the field.
-            ValidatableTextField("Name", text: $text, validator: Validators<String>().notEmpty)
+            ValidatableTextField("Name", text: $text, validator: \.notEmpty)
+
+            ValidatableTextField("Name", text: $text, validator: Validators<String>().notEmpty, alwaysEvaluate: true)
 
             // This should always evaluate.
             TextField("Not Validatable", text: $text)
