@@ -144,7 +144,7 @@ They can be combined to generate multiple messages, depending on result.
 
 ```swift
 
-let notEmptyOrFoo = Validators<String>().notEmpty.combined(with: myValidator)
+let notEmptyOrFoo = Validators<String>().notEmpty.combined(with: notFoo)
 
 let invalidBecauseEmptyResult = notEmptyOrFoo.validate("")
 assert(invalidBecauseEmptyResult.isValid == false)
