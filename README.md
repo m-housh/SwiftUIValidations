@@ -8,7 +8,7 @@
 A swift package that adds validation to views.
 
 
-![example](.github/Example.gif)
+![example](.github/Example-1.gif)
 
 ## Installation
 -------------------------
