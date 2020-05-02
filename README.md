@@ -26,17 +26,30 @@ The validatable text field is similar to a norma text field however it adds the 
 
 #### Key Path
 
-Use a key path on the `Validators` to derive the validator for the text - field
+Use a key path(s) on the `Validators` to derive the validator for the text - field
 
 ``` swift
+
+extension Validators where Value == String {
+    
+    var validEmail: Validator<String> {
+        Validator(errorText: "Invalid email address.") { email in
+            let regularExpression = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+            let testEmail = NSPredicate(format: "SELF MATCHES %@", regularExpression)
+            return testEmail.evaluate(with: email)
+        }
+    }
+}
     
 struct ContentView: View {
     
     @State private var nameText: String
+    @State private var emailText: String
     
     var body: some View {
         Form {
             ValidatableTextField("Name", text: $nameText, validator: \.notEmpty)
+            ValidatableTextField("Email", text: $emailText, validator: \.notEmpty, \.validEmail)
         }
     }
 }
@@ -100,12 +113,12 @@ The `Validators` is a namespace to extend and add your own `Validator`'s to.   T
 ``` swift
 
 /// A namespace for validators to be added to.
-public struct Validators<T> {
+public struct Validators<Value> {
     public init() { }
 }
 
 /// Add validators for specific binding values.
-extension Validators where T == String {
+extension Validators where Value == String {
 
     public var notEmpty: Validator<String> {
         Validator(errorText: "Required") { (string: String) -> Bool in

@@ -99,16 +99,15 @@ extension ValidatableTextField {
     public init(
         _ placeholder: String = "",
         text: Binding<String>,
-        validator keyPath: KeyPath<Validators<String>, Validator<String>>,
+        validator keyPaths: KeyPath<Validators<String>, Validator<String>>...,
         alwaysEvaluate: Bool = false,
         onEditingChanged: @escaping (Bool) -> () = { _ in },
         onCommit: @escaping () -> () = { }
     ) {
-        let validator = Validators<String>.validator(for: keyPath)
         self.init(
             placeholder,
             text: text,
-            validator: validator,
+            validator: keyPaths.validator(),
             alwaysEvaluate: alwaysEvaluate,
             onEditingChanged: onEditingChanged,
             onCommit: onCommit

@@ -100,18 +100,17 @@ extension View {
         errors: [String],
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
-        validate: @escaping (V) -> Bool
+        validator: @escaping (V) -> Bool
     ) -> some View {
         self.modifier(
             ErrorViewModifier(
                 errors: errors,
                 value: value,
                 shouldEvaluate: shouldEvaluate,
-                validate: validate
+                validate: validator
             )
         )
     }
-
 
     /// Add an error modifier / validation to a view.
     ///
@@ -122,13 +121,13 @@ extension View {
     public func errorModifier<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
-        validator keyPath: KeyPath<Validators<V>, Validator<V>>
+        validator keyPaths: KeyPath<Validators<V>, Validator<V>>...
     ) -> some View {
         self.modifier(
             ErrorViewModifier(
                 value: value,
                 shouldEvaluate: shouldEvaluate,
-                validator: Validators<V>.validator(for: keyPath)
+                validator: keyPaths.validator()
             )
         )
     }
@@ -142,14 +141,24 @@ extension View {
     public func errorModifier<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
-        validator: Validator<V>
+        validator: Validator<V>...
     ) -> some View {
         self.modifier(
             ErrorViewModifier(
                 value: value,
                 shouldEvaluate: shouldEvaluate,
-                validator: validator
+                validator: validator.validator()
             )
         )
+    }
+}
+
+internal extension Array {
+    func validator<V>() -> Validator<V> where Element == Validator<V> {
+        reduce(Validator<V>.empty, { $0.combined(with: $1) })
+    }
+
+    func validator<V>() -> Validator<V> where Element == KeyPath<Validators<V>, Validator<V>> {
+        map({ Validators<V>.validator(for: $0) }).validator()
     }
 }

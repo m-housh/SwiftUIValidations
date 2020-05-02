@@ -19,29 +19,29 @@ public protocol ValidationResultRepresentable {
     func combined(with other: ValidationResultRepresentable) -> ValidationResultRepresentable
 }
 
-public struct Validator<Type> {
+public struct Validator<Value> {
 
     /// Called to validate an item and return a `ValidationResult` based on the result.
-    private let validator: ((Type) -> Bool)?
+    private let validator: ((Value) -> Bool)?
 
     /// Used when we're combined with another validator.
-    private let _validate: ((Type) -> ValidationResultRepresentable)?
+    private let _validate: ((Value) -> ValidationResultRepresentable)?
 
     public let errors: [String]
 
-    public init(errorText: String, _ validate: @escaping (Type) -> Bool) {
+    public init(errorText: String, _ validate: @escaping (Value) -> Bool) {
         self.validator = validate
         self.errors = [errorText]
         self._validate = nil
     }
 
-    public init(errors: [String], _ validate: @escaping (Type) -> Bool) {
+    public init(errors: [String], _ validate: @escaping (Value) -> Bool) {
         self.errors = errors
         self.validator = validate
         self._validate = nil
     }
 
-    public func validate(_ item: Type) -> ValidationResultRepresentable {
+    public func validate(_ item: Value) -> ValidationResultRepresentable {
         guard let strongValidate = self._validate else {
             guard self.validator!(item) else {
                 return ValidationResult(isValid: false, errors: errors)
@@ -51,8 +51,8 @@ public struct Validator<Type> {
         return strongValidate(item)
     }
 
-    public static var empty: Validator<Type> {
-        Validator(errorText: "", { _ in return true })
+    public static var empty: Validator<Value> {
+        Validator<Value>(errorText: "", { _ in return true })
     }
 }
 
@@ -63,21 +63,21 @@ extension Validator {
         case before, after
     }
 
-    private init(lhs: Validator<Type>, rhs: Validator<Type>) {
+    private init(lhs: Validator<Value>, rhs: Validator<Value>) {
         self.errors = lhs.errors + rhs.errors
         self.validator = nil
         self._validate = { lhs.validate($0).combined(with: rhs.validate($0)) }
     }
 
-    public func combined(with other: Validator<Type>, evalute precedence: EvaluatePrecedence = .before) -> Validator<Type> {
+    public func combined(with other: Validator<Value>, evalute precedence: EvaluatePrecedence = .before) -> Validator<Value> {
         switch precedence {
         case .before: return .init(lhs: other, rhs: self)
         case .after: return .init(lhs: self, rhs: other)
         }
     }
 
-    public func combined(with keyPath: KeyPath<Validators<Type>, Validator<Type>>, evaluate precedence: EvaluatePrecedence = .before) -> Validator<Type> {
-        return combined(with: Validators<Type>()[keyPath: keyPath], evalute: precedence)
+    public func combined(with keyPath: KeyPath<Validators<Value>, Validator<Value>>, evaluate precedence: EvaluatePrecedence = .before) -> Validator<Value> {
+        return combined(with: Validators<Value>()[keyPath: keyPath], evalute: precedence)
     }
 }
 
