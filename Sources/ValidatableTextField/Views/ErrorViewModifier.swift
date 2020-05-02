@@ -42,24 +42,6 @@ struct ErrorViewModifier<Value>: ViewModifier {
         self.validator = validator
     }
 
-    /// Create a new error modifier.
-    ///
-    /// - Parameters:
-    ///     - errors: The error text(s) to display on failed validation.
-    ///     - value: The value to evaluate.
-    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
-    ///     - validate: A method to validate the value.
-    init(
-        errors: [String],
-        value: Binding<Value>,
-        shouldEvaluate: Binding<Bool> = .constant(true),
-        validate: @escaping (Value) -> Bool
-    ) {
-        self._value = value
-        self._shouldEvaluate = shouldEvaluate
-        self.validator = .init(errors: errors, validate)
-    }
-
     func body(content: Content) -> some View {
         VStack(alignment: .leading) {
             content
@@ -75,13 +57,16 @@ struct ErrorViewModifier<Value>: ViewModifier {
 
     private var errorUpdate: AnyPublisher<[String], Never> {
         Just(value)
-            .compactMap { value in
+            .tryCompactMap { value -> [String]? in
                 guard self.shouldEvaluate else { return nil }
-                let result = self.validator.validate(value)
-                guard !result.isValid else { return [] }
-                guard !result.errors.isEmpty else { return nil }
-                return result.errors
+                do {
+                    try self.validator.validate(value)
+                    return [String]()
+                } catch let error as ValidationError {
+                    return error.errors
+                }
             }
+            .replaceError(with: [String]()) // unhandled error / didn't throw ValidationError
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
@@ -97,68 +82,30 @@ extension View {
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
     ///     - validate: A method to validate the value.
     public func errorModifer<V>(
-        errors: [String],
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
-        validator: @escaping (V) -> Bool
-    ) -> some View {
-        self.modifier(
-            ErrorViewModifier(
-                errors: errors,
-                value: value,
-                shouldEvaluate: shouldEvaluate,
-                validate: validator
-            )
-        )
-    }
-
-    /// Add an error modifier / validation to a view.
-    ///
-    /// - Parameters:
-    ///     - value: The value to evaluate.
-    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
-    ///     - keyPath: A key path on `Validators` to derive the validation method from.
-    public func errorModifier<V>(
-        value: Binding<V>,
-        shouldEvaluate: Binding<Bool> = .constant(true),
-        validator keyPaths: KeyPath<Validators<V>, Validator<V>>...
+        validator: @escaping () -> Validator<V>
     ) -> some View {
         self.modifier(
             ErrorViewModifier(
                 value: value,
                 shouldEvaluate: shouldEvaluate,
-                validator: keyPaths.validator()
+                validator: validator()
             )
         )
     }
 
-    /// Add an error modifier / validation to a view.
-    ///
-    /// - Parameters:
-    ///     - value: The value to evaluate.
-    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
-    ///     - validator: A `Validator` used to validate the value.
-    public func errorModifier<V>(
+    public func errorModifer<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
-        validator: Validator<V>...
+        validator: Validator<V>
     ) -> some View {
         self.modifier(
             ErrorViewModifier(
                 value: value,
                 shouldEvaluate: shouldEvaluate,
-                validator: validator.validator()
+                validator: validator
             )
         )
-    }
-}
-
-internal extension Array {
-    func validator<V>() -> Validator<V> where Element == Validator<V> {
-        reduce(Validator<V>.empty, { $0.combined(with: $1) })
-    }
-
-    func validator<V>() -> Validator<V> where Element == KeyPath<Validators<V>, Validator<V>> {
-        map({ Validators<V>.validator(for: $0) }).validator()
     }
 }

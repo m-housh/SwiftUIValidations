@@ -40,23 +40,41 @@ public struct ValidatableTextField: View {
     /// - Parameters:
     ///     - placeholder: The placeholder text that shows inside the field when the value is empty.
     ///     - text: A binding to the text field's value.
-    ///     - validator: A `Validator` to use to validate the text.
     ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
     ///     - onEditingChanged:  Passed to the actual `TextField`
     ///     - onCommit:  Passed to the actual `TextField`
+    ///     - validator: A `Validator` to use to validate the text.
     public init(
         _ placeholder: String = "",
         text: Binding<String>,
-        validator: Validator<String> = .empty,
         alwaysEvaluate: Bool = false,
         onEditingChanged: @escaping (Bool) -> () = { _ in },
-        onCommit: @escaping () -> () = { }
+        onCommit: @escaping () -> () = { },
+        validator: Validator<String>
     ) {
         self.placeholder = placeholder
         self._text = text
         self.onEditingChanged = onEditingChanged
         self.onCommit = onCommit
         self.validator = validator
+        if alwaysEvaluate == true {
+            self._shouldEvaluate = .init(initialValue: true)
+        }
+    }
+
+    public init(
+        _ placeholder: String = "",
+        text: Binding<String>,
+        alwaysEvaluate: Bool = false,
+        onEditingChanged: @escaping (Bool) -> () = { _ in },
+        onCommit: @escaping () -> () = { },
+        validator: @escaping () -> Validator<String>
+    ) {
+        self.placeholder = placeholder
+        self._text = text
+        self.onEditingChanged = onEditingChanged
+        self.onCommit = onCommit
+        self.validator = validator()
         if alwaysEvaluate == true {
             self._shouldEvaluate = .init(initialValue: true)
         }
@@ -69,7 +87,8 @@ public struct ValidatableTextField: View {
             onEditingChanged: self.editingChanged,
             onCommit: { self.onCommit() }
         )
-            .errorModifier(value: $text, shouldEvaluate: $shouldEvaluate, validator: validator)
+        .errorModifer(value: $text, shouldEvaluate: $shouldEvaluate, validator: validator)
+//            .errorModifier2(value: $text, shouldEvaluate: $shouldEvaluate, validator: validator)
 
     }
 
@@ -96,21 +115,21 @@ extension ValidatableTextField {
     ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
     ///     - onEditingChanged:  Passed to the actual `TextField`
     ///     - onCommit:  Passed to the actual `TextField`
-    public init(
-        _ placeholder: String = "",
-        text: Binding<String>,
-        validator keyPaths: KeyPath<Validators<String>, Validator<String>>...,
-        alwaysEvaluate: Bool = false,
-        onEditingChanged: @escaping (Bool) -> () = { _ in },
-        onCommit: @escaping () -> () = { }
-    ) {
-        self.init(
-            placeholder,
-            text: text,
-            validator: keyPaths.validator(),
-            alwaysEvaluate: alwaysEvaluate,
-            onEditingChanged: onEditingChanged,
-            onCommit: onCommit
-        )
-    }
+//    public init(
+//        _ placeholder: String = "",
+//        text: Binding<String>,
+//        validator keyPaths: KeyPath<Validators<String>, Validator<String>>...,
+//        alwaysEvaluate: Bool = false,
+//        onEditingChanged: @escaping (Bool) -> () = { _ in },
+//        onCommit: @escaping () -> () = { }
+//    ) {
+//        self.init(
+//            placeholder,
+//            text: text,
+//            validator: keyPaths.validator(),
+//            alwaysEvaluate: alwaysEvaluate,
+//            onEditingChanged: onEditingChanged,
+//            onCommit: onCommit
+//        )
+//    }
 }

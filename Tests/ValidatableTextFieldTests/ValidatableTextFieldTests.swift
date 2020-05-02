@@ -14,13 +14,21 @@ struct ContentView: View, Inspectable {
     var body: some View {
         VStack {
             // Can't test the error modifier because we can't enter the field.
-            ValidatableTextField("Name", text: $text, validator: \.notEmpty)
+            ValidatableTextField("Name", text: $text, validator: !.empty)
 
-            ValidatableTextField("Name", text: $text, validator: Validators<String>().notEmpty, alwaysEvaluate: true)
+            // Trailing closure
+            ValidatableTextField("Name", text: $text, alwaysEvaluate: true) {
+                !.empty
+            }
 
             // This should always evaluate.
             TextField("Not Validatable", text: $text)
-                .errorModifier(value: $text, validator: \.notEmpty)
+                .errorModifer(value: $text, validator: !.empty)
+
+            TextField("Not Validatable", text: $text)
+                .errorModifer(value: $text) {
+                    !.empty && .email
+                }
 
         }
         .onReceive(inspection.notice) { self.inspection.visit(self, $0) }

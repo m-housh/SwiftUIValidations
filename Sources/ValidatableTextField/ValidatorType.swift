@@ -13,12 +13,21 @@ public protocol ValidatorType {
 
     var validatorReadable: String { get }
 
-    func validate(_ data: ValidationData) -> Bool
+    var inverseReadable: String { get }
+
+    func validate(_ data: ValidationData) throws -> ()
+}
+
+extension ValidatorType {
+
+    public var inverseReadable: String {
+        "Not \(validatorReadable)"
+    }
 }
 
 extension ValidatorType {
 
     public func validator() -> Validator<ValidationData> {
-        Validator(errorText: validatorReadable, validate)
+        Validator(readable: validatorReadable, inverseReadable: inverseReadable, validate)
     }
 }
