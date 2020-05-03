@@ -9,18 +9,18 @@ import XCTest
 import ViewInspector
 import SwiftUI
 
-@testable import ValidatableTextField
+@testable import SwiftUIValidations
 
 final class ErrorViewModifier2Tests: XCTestCase {
 
     func test_ErrorModifier_should_show_error() throws {
-        var sut = ErrorViewModifier(value: .constant(""), shouldEvaluate: .constant(true), validator: !.empty)
+        var sut = ErrorViewModifier(value: .constant(""), shouldEvaluate: .constant(true), errorPrefix: "Required:", validator: !.empty)
         let exp = XCTestExpectation(description: #function)
 
         sut.didAppear = { body in
             body.inspect { view in
                 let errorText = try view.vStack().forEach(1).text(0).string()
-                XCTAssertEqual(errorText, "Required")
+                XCTAssertEqual(errorText, "Required: not empty")
             }
             ViewHosting.expel()
             exp.fulfill()

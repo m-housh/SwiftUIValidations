@@ -26,7 +26,7 @@ public protocol ValidatorType {
 extension ValidatorType {
 
     public var inverseErrorText: String {
-        "Not \(errorText.lowercased())"
+        "not \(errorText.lowercased())"
     }
 }
 

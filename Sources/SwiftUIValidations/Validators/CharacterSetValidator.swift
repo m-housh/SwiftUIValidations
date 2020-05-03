@@ -68,7 +68,7 @@ fileprivate struct CharacterSetValidator: ValidatorType {
     /// See `Validator`
     public func validate(_ s: String) throws {
         if let range = s.rangeOfCharacter(from: characterSet.inverted) {
-            var reason = "Contains an invalid character: '\(s[range])'"
+            var reason = "contains an invalid character: '\(s[range])'"
             if characterSet.traits.count > 0 {
                 reason += " \(errorText)"
             }

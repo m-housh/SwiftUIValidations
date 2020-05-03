@@ -44,7 +44,6 @@ fileprivate struct OrValidator<T>: ValidatorType {
 /// Parses errors for `OrValidator`.
 fileprivate struct OrValidationError: ValidationError {
 
-
     let lhsError: ValidationError
     let rhsError: ValidationError
 

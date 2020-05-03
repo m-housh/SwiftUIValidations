@@ -22,9 +22,9 @@ extension Validator where T == String {
 /// Validates an email address.
 fileprivate struct EmailValidator: ValidatorType {
 
-    var errorText: String { "Invalid email" }
+    var errorText: String { "invalid email" }
 
-    var inverseErrorText: String { "Valid email" }
+    var inverseErrorText: String { "valid email" }
 
     init() { }
 

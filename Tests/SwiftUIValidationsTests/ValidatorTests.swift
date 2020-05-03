@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import ValidatableTextField
+@testable import SwiftUIValidations
 
 extension Validator where T == String {
 
@@ -48,7 +48,7 @@ final class ValidatorTests: XCTestCase {
         }
         XCTAssertEqual(errors.count, 2)
         XCTAssertEqual(errors.first, "Is not foo")
-        XCTAssertEqual(errors.last, "Invalid email")
+        XCTAssertEqual(errors.last, "invalid email")
     }
 
     func test_NeverFails_Validator() {
@@ -62,7 +62,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "12", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Count: at least 3 characters")
+            XCTAssertEqual(errors.first, "count: at least 3 characters")
         }
     }
 
@@ -72,12 +72,12 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "12", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Count: between 3 and 5 characters")
+            XCTAssertEqual(errors.first, "count: between 3 and 5 characters")
         }
 
         try validateErrors(value: "123456", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Count: between 3 and 5 characters")
+            XCTAssertEqual(errors.first, "count: between 3 and 5 characters")
         }
     }
 
@@ -92,7 +92,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "123456", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Count: at most 5 characters")
+            XCTAssertEqual(errors.first, "count: at most 5 characters")
         }
     }
 
@@ -102,12 +102,42 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "12", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Count: between 3 and 4 characters")
+            XCTAssertEqual(errors.first, "count: between 3 and 4 characters")
         }
 
         try validateErrors(value: "12345", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Count: between 3 and 4 characters")
+            XCTAssertEqual(errors.first, "count: between 3 and 4 characters")
+        }
+    }
+
+    func test_Count_Validator_error_text_with_array() throws {
+        let validator = Validator<[String]>.count(2...5)
+        XCTAssertNoThrow(try validator.validate(["foo", "bar"]))
+
+        try validateErrors(value: ["foo"], validator: validator) { errors in
+            XCTAssertEqual(errors.count, 1)
+            XCTAssertEqual(errors.first, "count: between 2 and 5 items")
+        }
+    }
+
+    func test_Count_Validator_error_text_with_array_and_one_max() throws {
+        let validator = Validator<[String]>.count(0...1)
+        XCTAssertNoThrow(try validator.validate(["foo"]))
+
+        try validateErrors(value: ["foo", "bar"], validator: validator) { errors in
+            XCTAssertEqual(errors.count, 1)
+            XCTAssertEqual(errors.first, "count: between 0 and 1 item")
+        }
+    }
+
+    func test_Count_Validator_error_text_with_string_and_one_max() throws {
+        let validator = Validator<String>.count(0...1)
+        XCTAssertNoThrow(try validator.validate("f"))
+
+        try validateErrors(value: "foo", validator: validator) { errors in
+            XCTAssertEqual(errors.count, 1)
+            XCTAssertEqual(errors.first, "count: between 0 and 1 character")
         }
     }
 
@@ -117,7 +147,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: 1, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Range: at least 3")
+            XCTAssertEqual(errors.first, "range: at least 3")
         }
     }
 
@@ -127,12 +157,12 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: 10, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Range: between 3 and 5")
+            XCTAssertEqual(errors.first, "range: between 3 and 5")
         }
 
         try validateErrors(value: 1, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Range: between 3 and 5")
+            XCTAssertEqual(errors.first, "range: between 3 and 5")
         }
     }
 
@@ -147,7 +177,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: 6, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Range: at most 5")
+            XCTAssertEqual(errors.first, "range: at most 5")
         }
     }
 
@@ -157,12 +187,12 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: 1, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Range: between 3 and 4")
+            XCTAssertEqual(errors.first, "range: between 3 and 4")
         }
 
         try validateErrors(value: 5, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required Range: between 3 and 4")
+            XCTAssertEqual(errors.first, "range: between 3 and 4")
         }
     }
 
@@ -173,7 +203,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "not foo", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "Required In: (foo, bar)")
+            XCTAssertEqual(errors.first, "in: (foo, bar)")
         }
     }
 
@@ -184,7 +214,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "_", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first!, "Contains an invalid character: '_' (allowed: A-Z, a-z, 0-9)")
+            XCTAssertEqual(errors.first!, "contains an invalid character: '_' (allowed: A-Z, a-z, 0-9)")
         }
     }
 
@@ -196,7 +226,7 @@ final class ValidatorTests: XCTestCase {
         let s = String(extendedGraphemeClusterLiteral: "😂")
         try validateErrors(value: "\(s)", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first!, "Contains an invalid character: '😂'")
+            XCTAssertEqual(errors.first!, "contains an invalid character: '😂'")
         }
     }
 
@@ -209,7 +239,78 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "_", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first!, "Contains an invalid character: '_' (allowed: whitespace, A-Z, a-z, 0-9)")
+            XCTAssertEqual(errors.first!, "contains an invalid character: '_' (allowed: whitespace, A-Z, a-z, 0-9)")
+        }
+    }
+
+    func test_Nil_Validator_inverse() throws {
+        let validator: Validator<Int?> = !.nil
+        XCTAssertNoThrow(try validator.validate(1))
+
+        try validateErrors(value: nil, validator: validator) { errors in
+            XCTAssertEqual(errors.count, 1)
+            XCTAssertEqual(errors.first, "not nil")
+        }
+    }
+
+    func test_Nil_Validator() throws {
+         let validator: Validator<Int?> = .nil
+         XCTAssertNoThrow(try validator.validate(nil))
+
+         try validateErrors(value: 1, validator: validator) { errors in
+             XCTAssertEqual(errors.count, 1)
+             XCTAssertEqual(errors.first, "nil")
+         }
+     }
+
+    func test_NilIgnoring_Validator_combined_with_or_operator() throws {
+        let validator1: Validator<String?> = .nil || .email
+        let validator2: Validator<String?> = .email || .nil
+
+        for validator in [validator1, validator2] {
+            XCTAssertNoThrow(try validator.validate(nil))
+            XCTAssertNoThrow(try validator.validate("foo@bar.com"))
+
+            try validateErrors(value: "invalid email", validator: validator) { errors in
+                XCTAssertEqual(errors.count, 2)
+                XCTAssert(errors.contains("nil"))
+                XCTAssert(errors.contains("invalid email"))
+
+            }
+        }
+    }
+
+    func test_NilIgnoring_Validator_combined_with_and_operator() throws {
+        let validator1: Validator<String?> = !.nil && .email
+        let validator2: Validator<String?> = .email && !.nil
+
+        for validator in [validator1, validator2] {
+            XCTAssertThrowsError(try validator.validate(nil))
+            XCTAssertNoThrow(try validator.validate("foo@bar.com"))
+
+            try validateErrors(value: "invalid email", validator: validator) { errors in
+                XCTAssertEqual(errors.count, 1)
+                XCTAssert(errors.contains("invalid email"))
+            }
+        }
+    }
+
+    func test_Validator_validate_with_error_prefix() throws {
+        let validator: Validator<String> = .email
+
+        try validateErrors(value: "invalid", validator: validator, errorPrefix: "Required:") { errors in
+            XCTAssertEqual(errors.count, 1)
+            XCTAssertEqual(errors.first, "Required: invalid email")
+        }
+    }
+
+    func test_Url_Validator() throws {
+        let validator: Validator<String> = .url
+        XCTAssertNoThrow(try validator.validate("http://example.com"))
+
+        try validateErrors(value: "invalid", validator: validator) { errors in
+            XCTAssertEqual(errors.count, 1)
+            XCTAssertEqual(errors.first, "invalid url")
         }
     }
 }
@@ -217,9 +318,9 @@ final class ValidatorTests: XCTestCase {
 // MARK: - Helpers
 extension ValidatorTests {
 
-    func validateErrors<T>(value: T, validator: Validator<T>, _ callback: ([String]) -> ()) throws {
+    func validateErrors<T>(value: T, validator: Validator<T>, errorPrefix: String = "", _ callback: ([String]) -> ()) throws {
         do {
-            try validator.validate(value)
+            try validator.validate(value, errorPrefix: errorPrefix)
         } catch let error as ValidationError {
             callback(error.errors)
         }

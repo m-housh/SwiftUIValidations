@@ -2,7 +2,7 @@ import XCTest
 import ViewInspector
 import Combine
 import SwiftUI
-@testable import ValidatableTextField
+@testable import SwiftUIValidations
 
 struct ContentView: View, Inspectable {
 

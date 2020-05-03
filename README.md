@@ -1,7 +1,7 @@
-# ValidatableTextField
+# SwiftUIValidations
 
-![CI](https://github.com/m-housh/ValidatableTextField/workflows/CI/badge.svg)
-[![codecov](https://codecov.io/gh/m-housh/ValidatableTextField/branch/master/graph/badge.svg)](https://codecov.io/gh/m-housh/ValidatableTextField)
+![CI](https://github.com/m-housh/SwiftUIValidations/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/m-housh/SwiftUIValidations/branch/master/graph/badge.svg)](https://codecov.io/gh/m-housh/SwiftUIValidations)
 ![iosBadge](https://img.shields.io/badge/iOS-%3E%3D%2013-orange)
 ![macBadge](https://img.shields.io/badge/macOS-%3E%3D%2010.15-blue)
 
@@ -88,4 +88,4 @@ Validators can be combined with the following operators `&&`, `||`, and `!` .
 ## Documentation
 -------------------------------
 
-See the [Documentation](https://m-housh.github.io/ValidatableTextField/index.html) for available validators.
+See the [Documentation](https://m-housh.github.io/SwiftUIValidations) for available validators.

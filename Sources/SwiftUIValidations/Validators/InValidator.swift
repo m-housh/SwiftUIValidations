@@ -31,7 +31,7 @@ fileprivate struct InValidator<T>: ValidatorType where T: Equatable {
     /// See `ValidatorType`.
     public var errorText: String {
         let all = array.map { "\($0)" }.joined(separator: ", ")
-        return "Required In: (\(all))"
+        return "in: (\(all))"
     }
 
     /// Array to check against.

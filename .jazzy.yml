@@ -1,6 +1,6 @@
-module: ValidatableTextField
+module: SwiftUIValidations 
 author: Michael Housh_
-title: ValidatableTextField
+title: SwiftUIValidations
 
 swift_build_tool: spm
 

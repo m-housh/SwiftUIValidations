@@ -55,7 +55,7 @@ struct RangeValidator<T>: ValidatorType where T: Comparable {
 
     /// See `ValidatorType`.
     var errorText: String {
-        "Required Range: \(countType.readable())"
+        "range: \(countType.readable())"
     }
 
     init(_ type: RangeType<T>) {

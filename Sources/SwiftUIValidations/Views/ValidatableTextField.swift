@@ -35,6 +35,9 @@ public struct ValidatableTextField: View {
     /// The validator for the field.
     let validator: Validator<String>
 
+    /// An error prefix to use with the validator.
+    let errorPrefix: String
+
     /// Create a new validatable text field.
     ///
     /// - Parameters:
@@ -43,6 +46,7 @@ public struct ValidatableTextField: View {
     ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
     ///     - onEditingChanged:  Passed to the actual `TextField`
     ///     - onCommit:  Passed to the actual `TextField`
+    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
     ///     - validator: A `Validator` to use to validate the text.
     public init(
         _ placeholder: String = "",
@@ -50,6 +54,7 @@ public struct ValidatableTextField: View {
         alwaysEvaluate: Bool = false,
         onEditingChanged: @escaping (Bool) -> () = { _ in },
         onCommit: @escaping () -> () = { },
+        errorPrefix: String = "",
         validator: Validator<String>
     ) {
         self.placeholder = placeholder
@@ -57,6 +62,7 @@ public struct ValidatableTextField: View {
         self.onEditingChanged = onEditingChanged
         self.onCommit = onCommit
         self.validator = validator
+        self.errorPrefix = errorPrefix
         if alwaysEvaluate == true {
             self._shouldEvaluate = .init(initialValue: true)
         }
@@ -70,6 +76,7 @@ public struct ValidatableTextField: View {
     ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
     ///     - onEditingChanged:  Passed to the actual `TextField`
     ///     - onCommit:  Passed to the actual `TextField`
+    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
     ///     - validator: A  trailing closure, that returns a `Validator` to use to validate the text.
     public init(
         _ placeholder: String = "",
@@ -77,6 +84,7 @@ public struct ValidatableTextField: View {
         alwaysEvaluate: Bool = false,
         onEditingChanged: @escaping (Bool) -> () = { _ in },
         onCommit: @escaping () -> () = { },
+        errorPrefix: String = "",
         validator: @escaping () -> Validator<String>
     ) {
         self.init(
@@ -85,6 +93,7 @@ public struct ValidatableTextField: View {
             alwaysEvaluate: alwaysEvaluate,
             onEditingChanged: onEditingChanged,
             onCommit: onCommit,
+            errorPrefix: errorPrefix,
             validator: validator()
         )
     }

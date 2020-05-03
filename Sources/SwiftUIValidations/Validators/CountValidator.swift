@@ -49,7 +49,7 @@ struct CountValidator<T>: ValidatorType where T: Collection {
 
     /// See `ValidatorType`.
     var errorText: String {
-        "Required Count: \(countType.readable(self.elementDescription))"
+        "count: \(countType.readable(self.elementDescription))"
     }
 
     func elementDescription(_ count: Int) -> String {

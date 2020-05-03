@@ -24,8 +24,8 @@ fileprivate struct EmptyValidator<T>: ValidatorType where T: Collection {
 
     typealias ValidationData = T
 
-    var errorText: String { "Empty" }
-    var inverseErrorText: String { "Required" }
+    var errorText: String { "empty" }
+    var inverseErrorText: String { "not empty" }
 
     func validate(_ data: T) throws {
         guard data.isEmpty else {
