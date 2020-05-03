@@ -15,8 +15,12 @@ public struct BasicValidationError: ValidationError {
 
     public var errors: [String]
 
-    init(errors: [String]) {
+    init(_ errors: [String]) {
         self.errors = errors
+    }
+
+    init(_ error: String) {
+        self.errors = [error]
     }
 
 }

@@ -21,7 +21,7 @@ public protocol ValidatorType {
 extension ValidatorType {
 
     public var inverseReadable: String {
-        "Not \(validatorReadable)"
+        "Not \(validatorReadable.lowercased())"
     }
 }
 

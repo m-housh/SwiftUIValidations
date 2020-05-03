@@ -23,7 +23,7 @@ fileprivate struct EmptyValidator<T>: ValidatorType where T: Collection {
 
     func validate(_ data: T) throws {
         guard data.isEmpty else {
-            throw BasicValidationError(errors: [(validatorReadable)])
+            throw BasicValidationError(validatorReadable)
         }
     }
 }
