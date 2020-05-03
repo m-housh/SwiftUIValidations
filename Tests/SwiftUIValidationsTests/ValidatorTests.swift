@@ -223,8 +223,8 @@ final class ValidatorTests: XCTestCase {
         XCTAssertNoThrow(try validator.validate("a"))
         XCTAssertNoThrow(try validator.validate("0"))
 
-        let s = String(extendedGraphemeClusterLiteral: "😂")
-        try validateErrors(value: "\(s)", validator: validator) { errors in
+        let string = String("😂")
+        try validateErrors(value: "\(string)", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
             XCTAssertEqual(errors.first!, "contains an invalid character: '😂'")
         }
@@ -235,7 +235,6 @@ final class ValidatorTests: XCTestCase {
         XCTAssertNoThrow(try validator.validate("a"))
         XCTAssertNoThrow(try validator.validate("0"))
         XCTAssertNoThrow(try validator.validate("0 aa"))
-
 
         try validateErrors(value: "_", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
@@ -318,7 +317,11 @@ final class ValidatorTests: XCTestCase {
 // MARK: - Helpers
 extension ValidatorTests {
 
-    func validateErrors<T>(value: T, validator: Validator<T>, errorPrefix: String = "", _ callback: ([String]) -> ()) throws {
+    func validateErrors<T>(
+        value: T, validator: Validator<T>,
+        errorPrefix: String = "",
+        _ callback: ([String]) -> Void) throws
+    {
         do {
             try validator.validate(value, errorPrefix: errorPrefix)
         } catch let error as ValidationError {

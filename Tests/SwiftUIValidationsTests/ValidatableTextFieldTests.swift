@@ -70,7 +70,6 @@ final class ValidatableTextFieldTests: XCTestCase {
     }
 
     static var allTests = [
-        ("test_TestContentView_text_changes", test_TestContentView_text_changes),
+        ("test_TestContentView_text_changes", test_TestContentView_text_changes)
     ]
 }
-

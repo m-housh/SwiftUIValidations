@@ -20,7 +20,7 @@ extension Validator where T: Collection {
 
 // MARK: - Private
 /// Validates whether a collection is empty or not.
-fileprivate struct EmptyValidator<T>: ValidatorType where T: Collection {
+private struct EmptyValidator<T>: ValidatorType where T: Collection {
 
     typealias ValidationData = T
 

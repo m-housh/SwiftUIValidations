@@ -20,7 +20,7 @@ public protocol ValidatorType {
     var inverseErrorText: String { get }
 
     /// The method that validates the `ValidationData` type.
-    func validate(_ data: ValidationData) throws -> ()
+    func validate(_ data: ValidationData) throws
 }
 
 extension ValidatorType {

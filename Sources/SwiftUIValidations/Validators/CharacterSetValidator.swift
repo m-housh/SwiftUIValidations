@@ -38,21 +38,20 @@ extension Validator where T == String {
 ///
 ///     .characterSet(.alphanumerics + .whitespaces)
 ///
-public func +(lhs: CharacterSet, rhs: CharacterSet) -> CharacterSet {
+public func + (lhs: CharacterSet, rhs: CharacterSet) -> CharacterSet {
     return lhs.union(rhs)
 }
 
-
 // MARK: Private
 /// Validates that a `String` contains characters in a given `CharacterSet`
-fileprivate struct CharacterSetValidator: ValidatorType {
+private struct CharacterSetValidator: ValidatorType {
 
     /// `CharacterSet` to validate against.
     let characterSet: CharacterSet
 
     /// See `Validator`
     public var errorText: String {
-        if characterSet.traits.count > 0 {
+        if !characterSet.traits.isEmpty {
             let string = characterSet.traits.joined(separator: ", ")
             return "(allowed: \(string))"
         } else {
@@ -66,10 +65,10 @@ fileprivate struct CharacterSetValidator: ValidatorType {
     }
 
     /// See `Validator`
-    public func validate(_ s: String) throws {
-        if let range = s.rangeOfCharacter(from: characterSet.inverted) {
-            var reason = "contains an invalid character: '\(s[range])'"
-            if characterSet.traits.count > 0 {
+    public func validate(_ string: String) throws {
+        if let range = string.rangeOfCharacter(from: characterSet.inverted) {
+            var reason = "contains an invalid character: '\(string[range])'"
+            if !characterSet.traits.isEmpty {
                 reason += " \(errorText)"
             }
             throw BasicValidationError(reason)
@@ -81,13 +80,12 @@ extension CharacterSet {
     /// ASCII (byte 0..<128) character set.
     fileprivate static var ascii: CharacterSet {
         var ascii: CharacterSet = .init()
-        for i in 0..<128 {
-            ascii.insert(Unicode.Scalar(i)!)
+        for index in 0..<128 {
+            ascii.insert(Unicode.Scalar(index)!)
         }
         return ascii
     }
 }
-
 
 extension CharacterSet {
     /// Returns an array of strings describing the contents of this `CharacterSet`.

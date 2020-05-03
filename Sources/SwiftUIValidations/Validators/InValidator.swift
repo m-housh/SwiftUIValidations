@@ -27,11 +27,11 @@ extension Validator where T: Equatable {
 
 // MARK: Private
 /// Validates whether an item is contained in the supplied array.
-fileprivate struct InValidator<T>: ValidatorType where T: Equatable {
+private struct InValidator<T>: ValidatorType where T: Equatable {
     /// See `ValidatorType`.
     public var errorText: String {
-        let all = array.map { "\($0)" }.joined(separator: ", ")
-        return "in: (\(all))"
+        let allJoined = array.map { "\($0)" }.joined(separator: ", ")
+        return "in: (\(allJoined))"
     }
 
     /// Array to check against.

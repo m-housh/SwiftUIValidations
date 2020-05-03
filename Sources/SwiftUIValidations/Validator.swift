@@ -16,9 +16,9 @@ public struct Validator<T> {
     let inverseErrorText: String
 
     /// The validation method.
-    private let closure: (T) throws -> ()
+    private let closure: (T) throws -> Void
 
-    init(errorText: String, inverseErrorText: String, _ closure: @escaping (T) throws -> ()) {
+    init(errorText: String, inverseErrorText: String, _ closure: @escaping (T) throws -> Void) {
         self.errorText = errorText
         self.inverseErrorText = inverseErrorText
         self.closure = closure

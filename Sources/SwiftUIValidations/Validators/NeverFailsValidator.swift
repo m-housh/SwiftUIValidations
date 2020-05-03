@@ -20,7 +20,7 @@ extension Validator {
     }
 }
 
-fileprivate struct NeverFailsValidator<T>: ValidatorType {
+private struct NeverFailsValidator<T>: ValidatorType {
 
     typealias ValidationData = T
 

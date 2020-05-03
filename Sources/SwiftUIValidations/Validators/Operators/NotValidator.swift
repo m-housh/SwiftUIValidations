@@ -11,26 +11,26 @@ import Foundation
 ///
 ///     let notEmpty: Validator<String> = !.empty
 ///
-public prefix func !<T>(rhs: Validator<T>) -> Validator<T> {
-    NotValidator(_validator: rhs).validator()
+public prefix func !<T> (rhs: Validator<T>) -> Validator<T> {
+    NotValidator(base: rhs).validator()
 }
 
 // MARK: - Private
 /// Adds the inverse of a validator using `!`.
-fileprivate struct NotValidator<T>: ValidatorType {
+private struct NotValidator<T>: ValidatorType {
 
     typealias ValidationData = T
 
-    let _validator: Validator<T>
+    let base: Validator<T>
 
     var errorText: String {
-        "\(_validator.inverseErrorText)"
+        "\(base.inverseErrorText)"
     }
 
     func validate(_ data: T) throws {
         var error: ValidationError?
         do {
-            try _validator.validate(data)
+            try base.validate(data)
         } catch let verror as ValidationError {
             error = verror
         }

@@ -34,9 +34,7 @@ extension Validator where T: Comparable {
     }
 }
 
-
 extension Validator where T: Comparable & Strideable {
-
 
     /// Validates that the data's count is within the supplied `Range`.
     ///
@@ -49,7 +47,7 @@ extension Validator where T: Comparable & Strideable {
 
 // MARK: Private
 /// Validates whether the item's count is within a supplied int range.
-struct RangeValidator<T>: ValidatorType where T: Comparable {
+private struct RangeValidator<T>: ValidatorType where T: Comparable {
 
     let countType: RangeType<T>
 

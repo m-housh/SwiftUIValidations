@@ -11,13 +11,13 @@ import Foundation
 ///
 ///     let validator: Validator<String> = .empty || .in("foo", "bar")
 ///
-public func ||<T>(lhs: Validator<T>, rhs: Validator<T>) -> Validator<T> {
+public func ||<T> (lhs: Validator<T>, rhs: Validator<T>) -> Validator<T> {
     OrValidator(lhs: lhs, rhs: rhs).validator()
 }
 
 // MARK: - Private
 /// Combines validators using `or`, `||`.
-fileprivate struct OrValidator<T>: ValidatorType {
+private struct OrValidator<T>: ValidatorType {
 
     typealias ValidationData = T
 
@@ -42,7 +42,7 @@ fileprivate struct OrValidator<T>: ValidatorType {
 }
 
 /// Parses errors for `OrValidator`.
-fileprivate struct OrValidationError: ValidationError {
+private struct OrValidationError: ValidationError {
 
     let lhsError: ValidationError
     let rhsError: ValidationError

@@ -11,13 +11,13 @@ import Foundation
 ///
 ///         let validator: Validator<String> = !.empty && .count(...10)
 ///
-public func &&<T>(lhs: Validator<T>, rhs: Validator<T>) -> Validator<T> {
+public func &&<T> (lhs: Validator<T>, rhs: Validator<T>) -> Validator<T> {
     AndValidator(lhs: lhs, rhs: rhs).validator()
 }
 
 // MARK: - Private
 /// Combines two validators together using the `&&`
-fileprivate struct AndValidator<T>: ValidatorType {
+private struct AndValidator<T>: ValidatorType {
 
     typealias ValidationData = T
 
@@ -50,7 +50,7 @@ fileprivate struct AndValidator<T>: ValidatorType {
 }
 
 /// Parses errors appropriately for the `AndValidator`
-fileprivate struct AndValidationError: ValidationError {
+private struct AndValidationError: ValidationError {
 
     let lhsError: ValidationError?
     let rhsError:ValidationError?

@@ -19,7 +19,7 @@ extension Validator where T: OptionalType {
 }
 
 /// Validates that the data is `nil`.
-fileprivate struct NilValidator<T>: ValidatorType {
+private struct NilValidator<T>: ValidatorType {
 
     typealias ValidationData = T?
 

@@ -20,7 +20,7 @@ extension Validator where T == String {
 
 // MARK: - Private
 /// Validates an email address.
-fileprivate struct EmailValidator: ValidatorType {
+private struct EmailValidator: ValidatorType {
 
     var errorText: String { "invalid email" }
 

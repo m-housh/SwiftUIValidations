@@ -27,10 +27,10 @@ public struct ValidatingTextField: View {
     @State private var shouldEvaluate: Bool = false
 
     /// Allows the user to hook into editing changed events for the textfield.
-    let onEditingChanged: (Bool) -> ()
+    let onEditingChanged: (Bool) -> Void
 
     /// Allows the user too hook into commit events for the textfield.
-    let onCommit: () -> ()
+    let onCommit: () -> Void
 
     /// The validator for the field.
     let validator: Validator<String>
@@ -52,8 +52,8 @@ public struct ValidatingTextField: View {
         _ placeholder: String = "",
         text: Binding<String>,
         alwaysEvaluate: Bool = false,
-        onEditingChanged: @escaping (Bool) -> () = { _ in },
-        onCommit: @escaping () -> () = { },
+        onEditingChanged: @escaping (Bool) -> Void = { _ in },
+        onCommit: @escaping () -> Void = { },
         errorPrefix: String = "",
         validator: Validator<String>
     ) {
@@ -82,8 +82,8 @@ public struct ValidatingTextField: View {
         _ placeholder: String = "",
         text: Binding<String>,
         alwaysEvaluate: Bool = false,
-        onEditingChanged: @escaping (Bool) -> () = { _ in },
-        onCommit: @escaping () -> () = { },
+        onEditingChanged: @escaping (Bool) -> Void = { _ in },
+        onCommit: @escaping () -> Void = { },
         errorPrefix: String = "",
         validator: @escaping () -> Validator<String>
     ) {

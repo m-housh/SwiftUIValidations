@@ -26,7 +26,7 @@ extension Validator where T == String {
 
 // MARK: Private
 /// Validates whether a string is a valid email address.
-fileprivate struct URLValidator: ValidatorType {
+private struct URLValidator: ValidatorType {
 
     typealias ValidationData = String
 
