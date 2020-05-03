@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: ValidationErrorView {
+struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: View {
 
     /// The value to validate.
     @Binding var value: Value
@@ -26,6 +26,12 @@ struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: Valida
     /// An error prefix to use with all errors generated.
     private let errorPrefix: String
 
+    /// Generates the view for each error that is generated during validatiion.
+    private let errorViewBuilder: ([String]) -> ErrorView
+
+    /// The alignment for the `VStack` for the errors.
+    private let alignment: HorizontalAlignment
+
     // Used for inspection testing.
     internal var didAppear: ((Self.Body) -> Void)?
 
@@ -34,25 +40,29 @@ struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: Valida
     /// - Parameters:
     ///     - value: The value to evaluate.
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - alignment: Alignment guide for the `VStack` that holds the content and errors.
     ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
     ///     - validator: The validator for the value.
     init(
         value: Binding<Value>,
         shouldEvaluate: Binding<Bool>,
+        alignment: HorizontalAlignment = .leading,
         errorPrefix: String = "",
-        errorView: ErrorView.Type,
-        validator: Validator<Value>
+        validator: Validator<Value>,
+        @ViewBuilder errorView: @escaping ([String]) -> ErrorView
     ) {
         self._value = value
         self._shouldEvaluate = shouldEvaluate
         self.validator = validator
         self.errorPrefix = errorPrefix
+        self.errorViewBuilder = errorView
+        self.alignment = alignment
     }
 
     func body(content: Content) -> some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: alignment) {
             content
-            ErrorView.init($errors)
+            self.errorViewBuilder(errors)
         }
         .onReceive(errorUpdate) { self.errors = $0 }
         .onAppear { self.didAppear?(self.body(content: content)) }
@@ -75,118 +85,61 @@ struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: Valida
     }
 }
 
-extension ErrorViewModifier where ErrorView == DefaultValidationErrorView {
-    /// Create a new error modifier.
-    ///
-    /// - Parameters:
-    ///     - value: The value to evaluate.
-    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
-    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
-    ///     - validator: The validator for the value.
-    init(
-        value: Binding<Value>,
-        shouldEvaluate: Binding<Bool>,
-        errorPrefix: String = "",
-        validator: Validator<Value>
-    ) {
-        self.init(
-            value: value,
-            shouldEvaluate: shouldEvaluate,
-            errorView: DefaultValidationErrorView.self,
-            validator: validator
-        )
-    }
-}
-
 extension View {
 
     /// Add an error modifier / validation to a view.
     ///
     /// - Parameters:
-    ///     - value: The value to validate.
-    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
-    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
-    ///     - errorView: A `ValidationErrorView` to display errors.
-    ///     - validator: A trailing closure that returns a `Validator`, used to validate the value.
-    public func errorModifer<V, E>(
-        value: Binding<V>,
-        shouldEvaluate: Binding<Bool> = .constant(true),
-        errorPrefix: String = "",
-        errorView: E.Type,
-        validator: @escaping () -> Validator<V>
-    ) -> some View
-        where E: ValidationErrorView
-    {
-        self.errorModifer(
-            value: value,
-            shouldEvaluate: shouldEvaluate,
-            errorPrefix: errorPrefix,
-            errorView: errorView,
-            validator: validator()
-        )
-    }
-
-    /// Add an error modifier / validation to a view.
-    ///
-    /// - Parameters:
-    ///     - value: The value to validate.
-    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
-    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
-    ///     - validator: A trailing closure that returns a `Validator`, used to validate the value.
-    public func errorModifer<V>(
-        value: Binding<V>,
-        shouldEvaluate: Binding<Bool> = .constant(true),
-        errorPrefix: String = "",
-        validator: @escaping () -> Validator<V>
-    ) -> some View
-    {
-        self.errorModifer(
-            value: value,
-            shouldEvaluate: shouldEvaluate,
-            errorPrefix: errorPrefix,
-            errorView: DefaultValidationErrorView.self,
-            validator: validator()
-        )
-    }
-
-    /// Add an error modifier / validation to a view.
-    ///
-    /// - Parameters:
     ///     - value: The value to evaluate.
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - alignment: Alignment guide for the `VStack` that holds the content and errors.
     ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
-    ///     - errorView: A `ValidationErrorView` to display errors.
     ///     - validator: A `Validator`, used to validate the value.
+    ///     - builder: A view builder for when errors are generated.
     public func errorModifer<V, E>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
+        alignment: HorizontalAlignment = .leading,
         errorPrefix: String = "",
-        errorView: E.Type,
-        validator: Validator<V>
+        validator: Validator<V>,
+        @ViewBuilder _ builder: @escaping ([String]) -> E
     ) -> some View
-        where E: ValidationErrorView
+        where E: View
     {
         self.modifier(
             ErrorViewModifier(
                 value: value,
                 shouldEvaluate: shouldEvaluate,
+                alignment: alignment,
                 errorPrefix: errorPrefix,
-                errorView: errorView,
-                validator: validator
+                validator: validator,
+                errorView: builder
             )
         )
     }
 
-    /// Add an error modifier / validation to a view.
+    /// Add an error modifier / validation to a view, with a default error view builder.
+    ///
+    ///  - Note:
+    ///     The default error view, which is called for each error generated during validation.
+    ///     ``` swift
+    ///     ForEach(errors, id: \.self) { error in
+    ///         Text(error)
+    ///             .font(.callout)
+    ///             .foregroundColor(.red)
+    ///     }
+    ///     ```
     ///
     /// - Parameters:
     ///     - value: The value to evaluate.
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - alignment: Alignment guide for the `VStack` that holds the content and errors.
     ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
     ///     - validator: A `Validator`, used to validate the value.
     public func errorModifer<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
+        alignment: HorizontalAlignment = .leading,
         errorPrefix: String = "",
         validator: Validator<V>
     ) -> some View
@@ -195,10 +148,52 @@ extension View {
             ErrorViewModifier(
                 value: value,
                 shouldEvaluate: shouldEvaluate,
+                alignment: alignment,
                 errorPrefix: errorPrefix,
-                errorView: DefaultValidationErrorView.self,
                 validator: validator
-            )
+            ) { errors in
+                ForEach(errors, id: \.self) {
+                    Text($0)
+                        .font(.callout)
+                        .foregroundColor(.red)
+                }
+            }
+        )
+    }
+
+    /// Add an error modifier / validation to a view, with a default error view builder.
+    ///
+    ///
+    ///  - Note:
+    ///     The default error view, which is called for each error generated during validation.
+    ///     ``` swift
+    ///     ForEach(errors, id: \.self) { error in
+    ///         Text(error)
+    ///             .font(.callout)
+    ///             .foregroundColor(.red)
+    ///     }
+    ///     ```
+    ///
+    /// - Parameters:
+    ///     - value: The value to validate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - alignment: Alignment guide for the `VStack` that holds the content and errors.
+    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
+    ///     - validator: A trailing closure that returns a `Validator`, used to validate the value.
+    public func errorModifer<V>(
+        value: Binding<V>,
+        shouldEvaluate: Binding<Bool> = .constant(true),
+        alignment: HorizontalAlignment = .leading,
+        errorPrefix: String = "",
+        validator: @escaping () -> Validator<V>
+    ) -> some View
+    {
+        self.errorModifer(
+            value: value,
+            shouldEvaluate: shouldEvaluate,
+            alignment: alignment,
+            errorPrefix: errorPrefix,
+            validator: validator()
         )
     }
 }

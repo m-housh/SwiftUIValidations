@@ -10,7 +10,7 @@ import Combine
 
 /// A text field that is able to validate it's value once it's been changed.  By default the text field will not evaluate until the field
 /// has been entered, then exited for the first time.
-public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationErrorView {
+public struct ValidatingTextField<ErrorView>: View where ErrorView: View {
 
     /// The placeholder text for the field.
     let placeholder: String
@@ -38,6 +38,8 @@ public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationEr
     /// An error prefix to use with the validator.
     let errorPrefix: String
 
+    let errorViewBuilder: ([String]) -> ErrorView
+
     /// Create a new validatable text field.
     ///
     /// - Parameters:
@@ -55,8 +57,8 @@ public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationEr
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
         onCommit: @escaping () -> Void = { },
         errorPrefix: String = "",
-        errorView: ErrorView.Type,
-        validator: Validator<String>
+        validator: Validator<String>,
+        @ViewBuilder errorView: @escaping ([String]) -> ErrorView
     ) {
         self.placeholder = placeholder
         self._text = text
@@ -64,6 +66,7 @@ public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationEr
         self.onCommit = onCommit
         self.validator = validator
         self.errorPrefix = errorPrefix
+        self.errorViewBuilder = errorView
         if alwaysEvaluate == true {
             self._shouldEvaluate = .init(initialValue: true)
         }
@@ -86,8 +89,8 @@ public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationEr
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
         onCommit: @escaping () -> Void = { },
         errorPrefix: String = "",
-        errorView: ErrorView.Type,
-        validator: @escaping () -> Validator<String>
+        validator: @escaping () -> Validator<String>,
+        @ViewBuilder errorView: @escaping ([String]) -> ErrorView
     ) {
         self.init(
             placeholder,
@@ -96,8 +99,8 @@ public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationEr
             onEditingChanged: onEditingChanged,
             onCommit: onCommit,
             errorPrefix: errorPrefix,
-            errorView: errorView,
-            validator: validator()
+            validator: validator(),
+            errorView: errorView
         )
     }
 
@@ -108,7 +111,7 @@ public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationEr
             onEditingChanged: self.editingChanged,
             onCommit: { self.onCommit() }
         )
-            .errorModifer(value: $text, shouldEvaluate: $shouldEvaluate, errorView: ErrorView.self, validator: validator)
+            .errorModifer(value: $text, shouldEvaluate: $shouldEvaluate, validator: validator, errorViewBuilder)
 
     }
 
@@ -124,7 +127,7 @@ public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationEr
     }
 }
 
-extension ValidatingTextField where ErrorView == DefaultValidationErrorView {
+extension ValidatingTextField where ErrorView == ForEach<[String], String, Text> {
 
     /// Create a new validatable text field.
     ///
@@ -152,9 +155,14 @@ extension ValidatingTextField where ErrorView == DefaultValidationErrorView {
             onEditingChanged: onEditingChanged,
             onCommit: onCommit,
             errorPrefix: errorPrefix,
-            errorView: DefaultValidationErrorView.self,
             validator: validator
-        )
+        ) { errors in
+            ForEach(errors, id: \.self) {
+                Text($0)
+                    .font(.callout)
+                    .foregroundColor(.red)
+            }
+        }
     }
 
     /// Create a new validatable text field.
@@ -183,7 +191,6 @@ extension ValidatingTextField where ErrorView == DefaultValidationErrorView {
             onEditingChanged: onEditingChanged,
             onCommit: onCommit,
             errorPrefix: errorPrefix,
-            errorView: DefaultValidationErrorView.self,
             validator: validator()
         )
     }

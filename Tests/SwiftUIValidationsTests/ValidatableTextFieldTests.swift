@@ -31,8 +31,17 @@ struct ContentView: View, Inspectable {
                 }
 
             TextField("Not Validatable", text: $text)
-                .errorModifer(value: $text, errorView: DefaultValidationErrorView.self) {
+                .errorModifer(value: $text) {
                     !.empty && .email
+                }
+
+            TextField("Not Validatable", text: $text)
+                .errorModifer(value: $text, validator: !.empty) { errors in
+                    ForEach(errors, id: \.self) { error in
+                        Text(error)
+                            .font(.title)
+                            .foregroundColor(.red)
+                    }
                 }
 
         }
