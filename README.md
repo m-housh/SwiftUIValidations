@@ -17,9 +17,9 @@ Add to your project using `swift package manager`.
 ## Basic Usage
 --------------------------
 
-There are 3 main things this package exposes. `Validator`, `ValidatableTextField`, and an `errorModifier` view modifiier.
+There are 3 main things this package exposes. `Validator`, `ValidatingTextField`, and an `errorModifier` view modifiier.
 
-### ValidatableTextField
+### ValidatingTextField
 
 The validatable text field is similar to a normal text field however it adds the abilitiy to validate the text value, and display an error message(s) if invalid.  There are two ways to create a validatable text field.
 
