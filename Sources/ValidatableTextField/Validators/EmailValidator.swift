@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Validator {
+extension Validator where T == String {
 
     /// Validates an email address.
     ///

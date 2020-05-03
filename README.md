@@ -14,7 +14,6 @@ A swift package that adds validation to views.
 -------------------------
 Add to your project using `swift package manager`.
 
-
 ## Basic Usage
 --------------------------
 
@@ -85,3 +84,8 @@ Validators can be combined with the following operators `&&`, `||`, and `!` .
 -   `&&`:  Combine two validators together using `AND`
 -   `||`:  Combine two validators together using `OR`
 -   `!`:  Use the inverse of a validator using `NOT`
+
+## Documentation
+-------------------------------
+
+See the ![Documentation](https://m-housh.github.io/ValidatableTextField/index.html) for available validators.
