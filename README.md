@@ -88,4 +88,4 @@ Validators can be combined with the following operators `&&`, `||`, and `!` .
 ## Documentation
 -------------------------------
 
-See the ![Documentation](https://m-housh.github.io/ValidatableTextField/index.html) for available validators.
+See the [Documentation](https://m-housh.github.io/ValidatableTextField/index.html) for available validators.
