@@ -19,8 +19,10 @@ final class ErrorViewModifier2Tests: XCTestCase {
 
         sut.didAppear = { body in
             body.inspect { view in
-                let errorText = try view.vStack().forEach(1).text(0).string()
-                XCTAssertEqual(errorText, "Required: not empty")
+                let errorText = try view.vStack()
+                    .view(DefaultValidationErrorView.self, 1).actualView()
+                    .errors.wrappedValue.first
+                XCTAssertEqual(errorText, "not empty")
             }
             ViewHosting.expel()
             exp.fulfill()
@@ -39,7 +41,9 @@ final class ErrorViewModifier2Tests: XCTestCase {
 
         sut.didAppear = { body in
             body.inspect { view in
-                let count = try view.vStack().forEach(1).count
+                let count = try view.vStack()
+                    .view(DefaultValidationErrorView.self, 1).actualView()
+                    .errors.wrappedValue.count
                 XCTAssertEqual(count, 0)
             }
             ViewHosting.expel()

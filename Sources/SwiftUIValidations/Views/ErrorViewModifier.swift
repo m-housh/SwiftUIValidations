@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-struct ErrorViewModifier<Value>: ViewModifier {
+struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: ValidationErrorView {
 
     /// The value to validate.
     @Binding var value: Value
@@ -40,6 +40,7 @@ struct ErrorViewModifier<Value>: ViewModifier {
         value: Binding<Value>,
         shouldEvaluate: Binding<Bool>,
         errorPrefix: String = "",
+        errorView: ErrorView.Type,
         validator: Validator<Value>
     ) {
         self._value = value
@@ -51,11 +52,7 @@ struct ErrorViewModifier<Value>: ViewModifier {
     func body(content: Content) -> some View {
         VStack(alignment: .leading) {
             content
-            ForEach(errors, id: \.self) { errorText in
-                Text(errorText)
-                    .font(.callout)
-                    .foregroundColor(.red)
-            }
+            ErrorView.init($errors)
         }
         .onReceive(errorUpdate) { self.errors = $0 }
         .onAppear { self.didAppear?(self.body(content: content)) }
@@ -78,7 +75,56 @@ struct ErrorViewModifier<Value>: ViewModifier {
     }
 }
 
+extension ErrorViewModifier where ErrorView == DefaultValidationErrorView {
+    /// Create a new error modifier.
+    ///
+    /// - Parameters:
+    ///     - value: The value to evaluate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
+    ///     - validator: The validator for the value.
+    init(
+        value: Binding<Value>,
+        shouldEvaluate: Binding<Bool>,
+        errorPrefix: String = "",
+        validator: Validator<Value>
+    ) {
+        self.init(
+            value: value,
+            shouldEvaluate: shouldEvaluate,
+            errorView: DefaultValidationErrorView.self,
+            validator: validator
+        )
+    }
+}
+
 extension View {
+
+    /// Add an error modifier / validation to a view.
+    ///
+    /// - Parameters:
+    ///     - value: The value to validate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
+    ///     - errorView: A `ValidationErrorView` to display errors.
+    ///     - validator: A trailing closure that returns a `Validator`, used to validate the value.
+    public func errorModifer<V, E>(
+        value: Binding<V>,
+        shouldEvaluate: Binding<Bool> = .constant(true),
+        errorPrefix: String = "",
+        errorView: E.Type,
+        validator: @escaping () -> Validator<V>
+    ) -> some View
+        where E: ValidationErrorView
+    {
+        self.errorModifer(
+            value: value,
+            shouldEvaluate: shouldEvaluate,
+            errorPrefix: errorPrefix,
+            errorView: errorView,
+            validator: validator()
+        )
+    }
 
     /// Add an error modifier / validation to a view.
     ///
@@ -92,12 +138,42 @@ extension View {
         shouldEvaluate: Binding<Bool> = .constant(true),
         errorPrefix: String = "",
         validator: @escaping () -> Validator<V>
-    ) -> some View {
+    ) -> some View
+    {
         self.errorModifer(
             value: value,
             shouldEvaluate: shouldEvaluate,
             errorPrefix: errorPrefix,
+            errorView: DefaultValidationErrorView.self,
             validator: validator()
+        )
+    }
+
+    /// Add an error modifier / validation to a view.
+    ///
+    /// - Parameters:
+    ///     - value: The value to evaluate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
+    ///     - errorView: A `ValidationErrorView` to display errors.
+    ///     - validator: A `Validator`, used to validate the value.
+    public func errorModifer<V, E>(
+        value: Binding<V>,
+        shouldEvaluate: Binding<Bool> = .constant(true),
+        errorPrefix: String = "",
+        errorView: E.Type,
+        validator: Validator<V>
+    ) -> some View
+        where E: ValidationErrorView
+    {
+        self.modifier(
+            ErrorViewModifier(
+                value: value,
+                shouldEvaluate: shouldEvaluate,
+                errorPrefix: errorPrefix,
+                errorView: errorView,
+                validator: validator
+            )
         )
     }
 
@@ -113,12 +189,14 @@ extension View {
         shouldEvaluate: Binding<Bool> = .constant(true),
         errorPrefix: String = "",
         validator: Validator<V>
-    ) -> some View {
+    ) -> some View
+    {
         self.modifier(
             ErrorViewModifier(
                 value: value,
                 shouldEvaluate: shouldEvaluate,
                 errorPrefix: errorPrefix,
+                errorView: DefaultValidationErrorView.self,
                 validator: validator
             )
         )

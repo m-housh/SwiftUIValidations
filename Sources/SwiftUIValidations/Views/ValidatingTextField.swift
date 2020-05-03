@@ -10,7 +10,7 @@ import Combine
 
 /// A text field that is able to validate it's value once it's been changed.  By default the text field will not evaluate until the field
 /// has been entered, then exited for the first time.
-public struct ValidatingTextField: View {
+public struct ValidatingTextField<ErrorView>: View where ErrorView: ValidationErrorView {
 
     /// The placeholder text for the field.
     let placeholder: String
@@ -55,6 +55,7 @@ public struct ValidatingTextField: View {
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
         onCommit: @escaping () -> Void = { },
         errorPrefix: String = "",
+        errorView: ErrorView.Type,
         validator: Validator<String>
     ) {
         self.placeholder = placeholder
@@ -85,6 +86,7 @@ public struct ValidatingTextField: View {
         onEditingChanged: @escaping (Bool) -> Void = { _ in },
         onCommit: @escaping () -> Void = { },
         errorPrefix: String = "",
+        errorView: ErrorView.Type,
         validator: @escaping () -> Validator<String>
     ) {
         self.init(
@@ -94,6 +96,7 @@ public struct ValidatingTextField: View {
             onEditingChanged: onEditingChanged,
             onCommit: onCommit,
             errorPrefix: errorPrefix,
+            errorView: errorView,
             validator: validator()
         )
     }
@@ -105,7 +108,7 @@ public struct ValidatingTextField: View {
             onEditingChanged: self.editingChanged,
             onCommit: { self.onCommit() }
         )
-        .errorModifer(value: $text, shouldEvaluate: $shouldEvaluate, validator: validator)
+            .errorModifer(value: $text, shouldEvaluate: $shouldEvaluate, errorView: ErrorView.self, validator: validator)
 
     }
 
@@ -118,5 +121,70 @@ public struct ValidatingTextField: View {
             self.shouldEvaluate = true
         }
         self.onEditingChanged(isInFocus)
+    }
+}
+
+extension ValidatingTextField where ErrorView == DefaultValidationErrorView {
+
+    /// Create a new validatable text field.
+    ///
+    /// - Parameters:
+    ///     - placeholder: The placeholder text that shows inside the field when the value is empty.
+    ///     - text: A binding to the text field's value.
+    ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
+    ///     - onEditingChanged:  Passed to the actual `TextField`
+    ///     - onCommit:  Passed to the actual `TextField`
+    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
+    ///     - validator: A `Validator` to use to validate the text.
+    public init(
+        _ placeholder: String = "",
+        text: Binding<String>,
+        alwaysEvaluate: Bool = false,
+        onEditingChanged: @escaping (Bool) -> Void = { _ in },
+        onCommit: @escaping () -> Void = { },
+        errorPrefix: String = "",
+        validator: Validator<String>
+    ) {
+        self.init(
+            placeholder,
+            text: text,
+            alwaysEvaluate: alwaysEvaluate,
+            onEditingChanged: onEditingChanged,
+            onCommit: onCommit,
+            errorPrefix: errorPrefix,
+            errorView: DefaultValidationErrorView.self,
+            validator: validator
+        )
+    }
+
+    /// Create a new validatable text field.
+    ///
+    /// - Parameters:
+    ///     - placeholder: The placeholder text that shows inside the field when the value is empty.
+    ///     - text: A binding to the text field's value.
+    ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
+    ///     - onEditingChanged:  Passed to the actual `TextField`
+    ///     - onCommit:  Passed to the actual `TextField`
+    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
+    ///     - validator: A  trailing closure, that returns a `Validator` to use to validate the text.
+    public init(
+        _ placeholder: String = "",
+        text: Binding<String>,
+        alwaysEvaluate: Bool = false,
+        onEditingChanged: @escaping (Bool) -> Void = { _ in },
+        onCommit: @escaping () -> Void = { },
+        errorPrefix: String = "",
+        validator: @escaping () -> Validator<String>
+    ) {
+        self.init(
+            placeholder,
+            text: text,
+            alwaysEvaluate: alwaysEvaluate,
+            onEditingChanged: onEditingChanged,
+            onCommit: onCommit,
+            errorPrefix: errorPrefix,
+            errorView: DefaultValidationErrorView.self,
+            validator: validator()
+        )
     }
 }

@@ -30,6 +30,11 @@ struct ContentView: View, Inspectable {
                     !.empty && .email
                 }
 
+            TextField("Not Validatable", text: $text)
+                .errorModifer(value: $text, errorView: DefaultValidationErrorView.self) {
+                    !.empty && .email
+                }
+
         }
         .onReceive(inspection.notice) { self.inspection.visit(self, $0) }
         .onReceive(publisher) { self.text = $0 }
