@@ -34,8 +34,8 @@ struct ContentView: View {
     
     var body: some View {
         Form {
-            ValidatableTextField("Name", text: $nameText, validator: !.empty && .count(5...))
-            ValidatableTextField("Email", text: $emailText) {
+            ValidatingTextField("Name", text: $nameText, validator: !.empty && .count(5...))
+            ValidatingTextField("Email", text: $emailText) {
                 !.empty && .email
             }
         }
