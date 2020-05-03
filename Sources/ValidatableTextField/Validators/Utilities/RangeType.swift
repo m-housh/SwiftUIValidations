@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Used in `count` and `range` validators to parse the upper and lower bounds
+/// and generate part of the error text appropriately.
 enum RangeType<T> {
     case closedRange(min: T, max: T)
     case partialRangeMax(max: T)

@@ -9,14 +9,14 @@ import Foundation
 
 public struct Validator<T> {
 
-    let readable: String
-    let inverseReadable: String
+    let errorText: String
+    let inverseErrorText: String
 
     private let closure: (T) throws -> ()
 
-    init(readable: String, inverseReadable: String, _ closure: @escaping (T) throws -> ()) {
-        self.readable = readable
-        self.inverseReadable = inverseReadable
+    init(errorText: String, inverseErrorText: String, _ closure: @escaping (T) throws -> ()) {
+        self.errorText = errorText
+        self.inverseErrorText = inverseErrorText
         self.closure = closure
     }
 

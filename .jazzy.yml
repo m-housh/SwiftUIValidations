@@ -1,0 +1,7 @@
+module: ValidatableTextField
+author: Michael Housh_
+title: ValidatableTextField
+
+swift_build_tool: spm
+
+theme: fullwidth

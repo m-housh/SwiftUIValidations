@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  AndValidator.swift
 //  
 //
 //  Created by Michael Housh on 5/2/20.
@@ -7,10 +7,16 @@
 
 import Foundation
 
+/// Combines two validators together using the `&&`
+///
+///         let validator: Validator<String> = !.empty && .count(...10)
+///
 public func &&<T>(lhs: Validator<T>, rhs: Validator<T>) -> Validator<T> {
     AndValidator(lhs: lhs, rhs: rhs).validator()
 }
 
+// MARK: - Private
+/// Combines two validators together using the `&&`
 fileprivate struct AndValidator<T>: ValidatorType {
 
     typealias ValidationData = T
@@ -18,8 +24,8 @@ fileprivate struct AndValidator<T>: ValidatorType {
     let lhs: Validator<T>
     let rhs: Validator<T>
 
-    var validatorReadable: String {
-        "\(lhs.readable) and is \(rhs.readable)"
+    var errorText: String {
+        "\(lhs.errorText) and is \(rhs.errorText)"
     }
 
     func validate(_ data: T) throws {
@@ -43,6 +49,7 @@ fileprivate struct AndValidator<T>: ValidatorType {
     }
 }
 
+/// Parses errors appropriately for the `AndValidator`
 fileprivate struct AndValidationError: ValidationError {
 
     let lhsError: ValidationError?

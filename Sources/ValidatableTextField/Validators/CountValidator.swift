@@ -10,7 +10,7 @@ import Foundation
 extension Validator where T: Collection {
     /// Validates that the data's count is within the supplied `ClosedRange`.
     ///
-    ///     try validations.add(\.name, .count(5...10))
+    ///     let validator = Validator<String>.count(5...10)
     ///
     public static func count(_ range: ClosedRange<Int>) -> Validator<T> {
         CountValidator(RangeType<Int>.closedRange(min: range.lowerBound, max: range.upperBound)).validator()
@@ -18,7 +18,7 @@ extension Validator where T: Collection {
 
     /// Validates that the data's count is less than the supplied upper bound using `PartialRangeThrough`.
     ///
-    ///     try validations.add(\.name, .count(...10))
+    ///     let validator = Validator<String>.count(...10)
     ///
     public static func count(_ range: PartialRangeThrough<Int>) -> Validator<T> {
         CountValidator(RangeType<Int>.partialRangeMax(max: range.upperBound)).validator()
@@ -26,7 +26,7 @@ extension Validator where T: Collection {
 
     /// Validates that the data's count is less than the supplied lower bound using `PartialRangeFrom`.
     ///
-    ///     try validations.add(\.name, .count(5...))
+    ///     let validator = Validator<String>.count(5...)
     ///
     public static func count(_ range: PartialRangeFrom<Int>) -> Validator<T> {
         CountValidator(RangeType<Int>.partialRangeMin(min: range.lowerBound)).validator()
@@ -34,7 +34,7 @@ extension Validator where T: Collection {
 
     /// Validates that the data's count is within the supplied `Range`.
     ///
-    ///     try validations.add(\.name, .count(5..<10))
+    ///     let validator = Validator<String>.count(5..<10)
     ///
     public static func count(_ range: Range<Int>) -> Validator<T> {
         CountValidator(RangeType<Int>.range(min: range.lowerBound, max: range.upperBound.advanced(by: -1))).validator()
@@ -48,7 +48,7 @@ struct CountValidator<T>: ValidatorType where T: Collection {
     let countType: RangeType<Int>
 
     /// See `ValidatorType`.
-    var validatorReadable: String {
+    var errorText: String {
         "Required Count: \(countType.readable(self.elementDescription))"
     }
 
@@ -68,13 +68,13 @@ struct CountValidator<T>: ValidatorType where T: Collection {
     func validate(_ data: T) throws {
         if let min = self.countType.min {
             guard data.count >= min else {
-                throw BasicValidationError(validatorReadable)
+                throw BasicValidationError(errorText)
             }
         }
 
         if let max = self.countType.max {
             guard data.count <= max else {
-                throw BasicValidationError(validatorReadable)
+                throw BasicValidationError(errorText)
             }
         }
     }

@@ -15,31 +15,18 @@ A swift package that adds validation to views.
 Add to your project using `swift package manager`.
 
 
-## Usage
-----------------
+## Basic Usage
+--------------------------
 
-There are 4 main things this package exposes. `Validator`, `Validators`, `ValidatableTextField`, and an `errorModifier` view modifiier.
+There are 3 main things this package exposes. `Validator`, `ValidatableTextField`, and an `errorModifier` view modifiier.
 
 ### ValidatableTextField
 
-The validatable text field is similar to a norma text field however it adds the abilitiy to validate the text value, and display an error message(s) if invalid.  There are two ways to create a validatable text field.
+The validatable text field is similar to a normal text field however it adds the abilitiy to validate the text value, and display an error message(s) if invalid.  There are two ways to create a validatable text field.
 
-#### Key Path
-
-Use a key path(s) on the `Validators` to derive the validator for the text - field
+You can use a single validator, or combine validators with `&&`, `||`, and `!` operators.
 
 ``` swift
-
-extension Validators where Value == String {
-    
-    var validEmail: Validator<String> {
-        Validator(errorText: "Invalid email address.") { email in
-            let regularExpression = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-            let testEmail = NSPredicate(format: "SELF MATCHES %@", regularExpression)
-            return testEmail.evaluate(with: email)
-        }
-    }
-}
     
 struct ContentView: View {
     
@@ -48,29 +35,10 @@ struct ContentView: View {
     
     var body: some View {
         Form {
-            ValidatableTextField("Name", text: $nameText, validator: \.notEmpty)
-            ValidatableTextField("Email", text: $emailText, validator: \.notEmpty, \.validEmail)
-        }
-    }
-}
-```
-
-#### Supplied Validator
-
-You can also provide your own validator.
-
-```swift
-struct ContentView: View {
-    
-    @State private var nameText: String
-    private var nameValidator = Validator<String>(errorText: "My custom name error.") { string in 
-        // do validation here, return `true` if valid and `false` if invalid.
-        return !string.isEmpty
-    }
-    
-    var body: some View {
-        Form {
-            ValidatableTextField("Name", text: $nameText, validator: nameValidator)
+            ValidatableTextField("Name", text: $nameText, validator: !.empty && .count(5...))
+            ValidatableTextField("Email", text: $emailText) {
+                !.empty && .email
+            }
         }
     }
 }
@@ -100,31 +68,7 @@ struct MyValidatableView: View {
     
     private var errorView: some View {
         Text("")
-            .errorModifier(value: $value, shouldEvaluate: $shouldEvaluate, validator: \.notEmpty)
-    }
-}
-
-```
-
-### Validators
-
-The `Validators` is a namespace to extend and add your own `Validator`'s to.   There is one default validator, shown below.
-
-``` swift
-
-/// A namespace for validators to be added to.
-public struct Validators<Value> {
-    public init() { }
-}
-
-/// Add validators for specific binding values.
-extension Validators where Value == String {
-
-    public var notEmpty: Validator<String> {
-        Validator(errorText: "Required") { (string: String) -> Bool in
-            let trimmed = string.trimmingCharacters(in: .whitespacesAndNewlines)
-            return !trimmed.isEmpty
-        }
+            .errorModifier(value: $value, shouldEvaluate: $shouldEvaluate, validator: !.empty)
     }
 }
 
@@ -136,37 +80,8 @@ extension Validators where Value == String {
 
 A validator holds the text to be displayed and the validation method.  A validator also has the ability to be combined with other validators, making a chain of error messages that will be displayed, depending on the result.
 
-```swift
+Validators can be combined with the following operators `&&`, `||`, and `!` .
 
-let notFoo: Validator<String> = Validator(errorText: "Can not be 'foo'") { string in 
-    return string.lowercased() != "foo"
-}
-
-/// use the `validate(_:)` method to test a value
-let invalidResult = notFoo.validate("foo")
-assert(result.isValid == false)
-assert(result.errors.first! == "Can not be 'foo'")
-
-let validResult = notFoo.validate("not foo")
-assert(result.isValid == true)
-assert(result.errors.count == 0)
-
-```
-
-They can be combined to generate multiple messages, depending on result.
-
-```swift
-
-let notEmptyOrFoo = Validators<String>().notEmpty.combined(with: notFoo)
-
-let invalidBecauseEmptyResult = notEmptyOrFoo.validate("")
-assert(invalidBecauseEmptyResult.isValid == false)
-assert(invalidBecauseEmptyResult.errors.first! == "Required")
-assert(invalidBecauseEmptyResult.errors.count == 1)
-
-let invalidBecauseFooResult = notEmptyOrFoo.validate("Foo")
-assert(invalidBecauseFooResult.isValid == false)
-assert(invalidBecauseFooResult.errors.first! == "Can not be 'foo'")
-assert(invalidBecauseFooResult.errors.count == 1)
-
-```
+-   `&&`:  Combine two validators together using `AND`
+-   `||`:  Combine two validators together using `OR`
+-   `!`:  Use the inverse of a validator using `NOT`

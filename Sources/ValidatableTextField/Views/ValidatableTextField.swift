@@ -62,6 +62,15 @@ public struct ValidatableTextField: View {
         }
     }
 
+    /// Create a new validatable text field.
+    ///
+    /// - Parameters:
+    ///     - placeholder: The placeholder text that shows inside the field when the value is empty.
+    ///     - text: A binding to the text field's value.
+    ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
+    ///     - onEditingChanged:  Passed to the actual `TextField`
+    ///     - onCommit:  Passed to the actual `TextField`
+    ///     - validator: A  trailing closure, that returns a `Validator` to use to validate the text.
     public init(
         _ placeholder: String = "",
         text: Binding<String>,
@@ -88,7 +97,6 @@ public struct ValidatableTextField: View {
             onCommit: { self.onCommit() }
         )
         .errorModifer(value: $text, shouldEvaluate: $shouldEvaluate, validator: validator)
-//            .errorModifier2(value: $text, shouldEvaluate: $shouldEvaluate, validator: validator)
 
     }
 
@@ -102,34 +110,4 @@ public struct ValidatableTextField: View {
         }
         self.onEditingChanged(isInFocus)
     }
-}
-
-extension ValidatableTextField {
-
-    /// Create a new validatable text field.
-    ///
-    /// - Parameters:
-    ///     - placeholder: The placeholder text that shows inside the field when the value is empty.
-    ///     - text: A binding to the text field's value.
-    ///     - keyPath: A `Validators` key path to derive the validator from.
-    ///     - alwaysEvaluate: A flag to override the default behaviour of waiting for field to evaluate until after it's been entered once.
-    ///     - onEditingChanged:  Passed to the actual `TextField`
-    ///     - onCommit:  Passed to the actual `TextField`
-//    public init(
-//        _ placeholder: String = "",
-//        text: Binding<String>,
-//        validator keyPaths: KeyPath<Validators<String>, Validator<String>>...,
-//        alwaysEvaluate: Bool = false,
-//        onEditingChanged: @escaping (Bool) -> () = { _ in },
-//        onCommit: @escaping () -> () = { }
-//    ) {
-//        self.init(
-//            placeholder,
-//            text: text,
-//            validator: keyPaths.validator(),
-//            alwaysEvaluate: alwaysEvaluate,
-//            onEditingChanged: onEditingChanged,
-//            onCommit: onCommit
-//        )
-//    }
 }

@@ -7,10 +7,14 @@
 
 import Foundation
 
+/// Representation of errors thrown from `Validator`'s.
 public protocol ValidationError: Error {
+
+    /// Failed validation error's.
     var errors: [String] { get }
 }
 
+/// A concrete `ValidationError`.
 public struct BasicValidationError: ValidationError {
 
     public var errors: [String]

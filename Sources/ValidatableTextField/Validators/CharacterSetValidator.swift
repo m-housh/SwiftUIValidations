@@ -8,9 +8,10 @@
 import Foundation
 
 extension Validator {
+
     /// Validates that all characters in a `String` are ASCII (bytes 0..<128).
     ///
-    ///     try validations.add(\.name, .ascii)
+    ///     let validator = Validator<String>.ascii
     ///
     public static var ascii: Validator<String> {
         return .characterSet(.ascii)
@@ -18,7 +19,7 @@ extension Validator {
 
     /// Validates that all characters in a `String` are alphanumeric (a-z,A-Z,0-9).
     ///
-    ///     try validations.add(\.name, .alphanumeric)
+    ///     let validator = Validator<String>.alphanumeric
     ///
     public static var alphanumeric: Validator<String> {
         return .characterSet(.alphanumerics)
@@ -26,7 +27,7 @@ extension Validator {
 
     /// Validates that all characters in a `String` are in the supplied `CharacterSet`.
     ///
-    ///     try validations.add(\.name, .characterSet(.alphanumerics + .whitespaces))
+    ///     let validator = Validator<String>.characterSet(.alphanumerics + .whitespaces)
     ///
     public static func characterSet(_ characterSet: CharacterSet) -> Validator<String> {
         return CharacterSetValidator(characterSet).validator()
@@ -50,7 +51,7 @@ fileprivate struct CharacterSetValidator: ValidatorType {
     let characterSet: CharacterSet
 
     /// See `Validator`
-    public var validatorReadable: String {
+    public var errorText: String {
         if characterSet.traits.count > 0 {
             let string = characterSet.traits.joined(separator: ", ")
             return "(allowed: \(string))"
@@ -69,7 +70,7 @@ fileprivate struct CharacterSetValidator: ValidatorType {
         if let range = s.rangeOfCharacter(from: characterSet.inverted) {
             var reason = "Contains an invalid character: '\(s[range])'"
             if characterSet.traits.count > 0 {
-                reason += " \(validatorReadable)"
+                reason += " \(errorText)"
             }
             throw BasicValidationError(reason)
         }

@@ -24,3 +24,12 @@ jobs:
     - name: Code Coverage
       run:
           bash <(curl -s https://codecov.io/bash) -J ValidatableTextField -t ${{secrets.CODECOV_TOKEN}}
+  deploy_docs:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Publish Jazzy Docs
+      uses: steven0351/publish-jazzy-docs@v1
+      with:
+        personal_access_token: ${{ secrets.JAZZY_TOKEN }}
+        config: .jazzy.yml

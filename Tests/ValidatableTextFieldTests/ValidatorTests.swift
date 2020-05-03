@@ -11,7 +11,7 @@ import XCTest
 extension Validator where T == String {
 
     static var isFoo: Validator<T> {
-        Validator(readable: "Is foo", inverseReadable: "Is not foo") { string in
+        Validator(errorText: "Is foo", inverseErrorText: "Is not foo") { string in
             guard string == "foo" else {
                 throw BasicValidationError("Is not foo")
             }
