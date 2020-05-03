@@ -79,14 +79,14 @@ public struct ValidatableTextField: View {
         onCommit: @escaping () -> () = { },
         validator: @escaping () -> Validator<String>
     ) {
-        self.placeholder = placeholder
-        self._text = text
-        self.onEditingChanged = onEditingChanged
-        self.onCommit = onCommit
-        self.validator = validator()
-        if alwaysEvaluate == true {
-            self._shouldEvaluate = .init(initialValue: true)
-        }
+        self.init(
+            placeholder,
+            text: text,
+            alwaysEvaluate: alwaysEvaluate,
+            onEditingChanged: onEditingChanged,
+            onCommit: onCommit,
+            validator: validator()
+        )
     }
 
     public var body: some View {

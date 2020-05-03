@@ -77,24 +77,23 @@ extension View {
     /// Add an error modifier / validation to a view.
     ///
     /// - Parameters:
-    ///     - errors: The error text(s) to display on failed validation.
-    ///     - value: The value to evaluate.
+    ///     - value: The value to validate.
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
-    ///     - validate: A method to validate the value.
+    ///     - validator: A trailing closure that returns a `Validator`, used to validate the value.
     public func errorModifer<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
         validator: @escaping () -> Validator<V>
     ) -> some View {
-        self.modifier(
-            ErrorViewModifier(
-                value: value,
-                shouldEvaluate: shouldEvaluate,
-                validator: validator()
-            )
-        )
+        self.errorModifer(value: value, shouldEvaluate: shouldEvaluate, validator: validator())
     }
 
+    /// Add an error modifier / validation to a view.
+    ///
+    /// - Parameters:
+    ///     - value: The value to evaluate.
+    ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
+    ///     - validator: A `Validator`, used to validate the value.
     public func errorModifer<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
