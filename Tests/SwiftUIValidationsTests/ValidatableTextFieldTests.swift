@@ -14,10 +14,10 @@ struct ContentView: View, Inspectable {
     var body: some View {
         VStack {
             // Can't test the error modifier because we can't enter the field.
-            ValidatableTextField("Name", text: $text, validator: !.empty)
+            ValidatingTextField("Name", text: $text, validator: !.empty)
 
             // Trailing closure
-            ValidatableTextField("Name", text: $text, alwaysEvaluate: true) {
+            ValidatingTextField("Name", text: $text, alwaysEvaluate: true) {
                 !.empty
             }
 

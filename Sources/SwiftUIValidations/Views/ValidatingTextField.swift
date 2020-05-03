@@ -10,7 +10,7 @@ import Combine
 
 /// A text field that is able to validate it's value once it's been changed.  By default the text field will not evaluate until the field
 /// has been entered, then exited for the first time.
-public struct ValidatableTextField: View {
+public struct ValidatingTextField: View {
 
     /// The placeholder text for the field.
     let placeholder: String
