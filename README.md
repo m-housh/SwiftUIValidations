@@ -90,7 +90,7 @@ struct MyValidatableView: View {
                 Group {
                     // Only show the first error.
                     if errors.first != nil {
-                        Text($0)
+                        Text(errors.first!.capitalized)
                             .modifier(ErrorTextModifier())
                     }
                 }
