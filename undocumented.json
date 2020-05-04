@@ -1,0 +1,131 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 10,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validator.swift",
+      "line": 40,
+      "symbol": "Validator",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validators/NilValidator.swift",
+      "line": 42,
+      "symbol": "OptionalType",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validators/NilValidator.swift",
+      "line": 43,
+      "symbol": "OptionalType.WrappedType",
+      "symbol_kind": "source.lang.swift.decl.associatedtype",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Validators/NilValidator.swift",
+      "line": 47,
+      "symbol": "Optional.WrappedType",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Views/SingleErrorView.swift",
+      "line": 62,
+      "symbol": "SingleErrorView.DisplayError.first",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations/Sources/SwiftUIValidations/Views/SingleErrorView.swift",
+      "line": 62,
+      "symbol": "SingleErrorView.DisplayError.last",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/runner/runners/2.169.1/work/SwiftUIValidations/SwiftUIValidations"
+}
