@@ -4,6 +4,48 @@ import Combine
 import SwiftUI
 @testable import SwiftUIValidations
 
+final class ValidatableTextFieldTests: XCTestCase {
+
+    func test_TestContentView_text_changes() throws {
+        let publisher = PassthroughSubject<String, Never>()
+        let sut = ContentView(publisher: publisher)
+
+        let exp1 = sut.inspection.inspect { view in
+            XCTAssertEqual(try view.actualView().text, "")
+            publisher.send("Foo")
+        }
+
+        let exp2 = sut.inspection.inspect(after: 0.2) { view in
+            XCTAssertEqual(try view.actualView().text, "Foo")
+        }
+
+        ViewHosting.host(view: sut)
+        wait(for: [exp1, exp2], timeout: 1)
+    }
+
+    func test_SingleErrorView_displays_only_first_error() throws {
+        let sut = SingleErrorViewContent(["foo", "bar"], displaying: .first)
+        let text = try sut.inspect().view(SingleErrorView.self).group().text(0).string()
+        XCTAssertEqual(text, "Foo")
+    }
+
+    func test_SingleErrorView_displays_only_last_error() throws {
+        let sut = SingleErrorViewContent(["foo", "bar"], displaying: .last)
+        let text = try sut.inspect().view(SingleErrorView.self).group().text(0).string()
+        XCTAssertEqual(text, "Bar")
+    }
+
+    func test_SingleErrorView_does_not_display_error_with_empty_list() throws {
+        let sut = SingleErrorViewContent([], displaying: .first)
+        let groupCount = try sut.inspect().view(SingleErrorView.self).group().count
+        XCTAssertEqual(groupCount, 0)
+    }
+
+    static var allTests = [
+        ("test_TestContentView_text_changes", test_TestContentView_text_changes)
+    ]
+}
+
 struct ContentView: View, Inspectable {
 
     @State var text: String = ""
@@ -68,26 +110,21 @@ internal final class Inspection<V> where V: View {
 
 extension Inspection: InspectionEmissary where V: Inspectable { }
 
-final class ValidatableTextFieldTests: XCTestCase {
+struct SingleErrorViewContent: View, Inspectable {
 
-    func test_TestContentView_text_changes() throws {
-        let publisher = PassthroughSubject<String, Never>()
-        let sut = ContentView(publisher: publisher)
+    let inspection = Inspection<Self>()
+    let errors: [String]
+    let display: SingleErrorView.DisplayError
 
-        let exp1 = sut.inspection.inspect { view in
-            XCTAssertEqual(try view.actualView().text, "")
-            publisher.send("Foo")
-        }
-
-        let exp2 = sut.inspection.inspect(after: 0.2) { view in
-            XCTAssertEqual(try view.actualView().text, "Foo")
-        }
-
-        ViewHosting.host(view: sut)
-        wait(for: [exp1, exp2], timeout: 1)
+    init(_ errors: [String], displaying display: SingleErrorView.DisplayError) {
+        self.errors = errors
+        self.display = display
     }
 
-    static var allTests = [
-        ("test_TestContentView_text_changes", test_TestContentView_text_changes)
-    ]
+    var body: some View {
+        SingleErrorView(errors, displaying: display)
+            .onReceive(inspection.notice) { self.inspection.visit(self, $0) }
+    }
 }
+
+extension SingleErrorView: Inspectable { }
