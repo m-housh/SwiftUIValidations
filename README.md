@@ -126,7 +126,7 @@ do {
 let prefixedNotEmpty: Validator<String> = .prefix("Required: ", !.empty)
 
 do {
-    try notEmpty.validate("")
+    try prefixedNotEmpty.validate("")
 } catch validationError as ValidationError {
     assert(validationError.first! == "Required: not empty")
 }
