@@ -23,9 +23,6 @@ struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: View {
     /// The validator used to validate the value.
     private let validator: Validator<Value>
 
-    /// An error prefix to use with all errors generated.
-    private let errorPrefix: String
-
     /// Generates the view for each error that is generated during validatiion.
     private let errorViewBuilder: ([String]) -> ErrorView
 
@@ -41,20 +38,17 @@ struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: View {
     ///     - value: The value to evaluate.
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
     ///     - alignment: Alignment guide for the `VStack` that holds the content and errors.
-    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
     ///     - validator: The validator for the value.
     init(
         value: Binding<Value>,
         shouldEvaluate: Binding<Bool>,
         alignment: HorizontalAlignment = .leading,
-        errorPrefix: String = "",
         validator: Validator<Value>,
         @ViewBuilder errorView: @escaping ([String]) -> ErrorView
     ) {
         self._value = value
         self._shouldEvaluate = shouldEvaluate
         self.validator = validator
-        self.errorPrefix = errorPrefix
         self.errorViewBuilder = errorView
         self.alignment = alignment
     }
@@ -73,7 +67,7 @@ struct ErrorViewModifier<Value, ErrorView>: ViewModifier where ErrorView: View {
             .tryCompactMap { value -> [String]? in
                 guard self.shouldEvaluate else { return nil }
                 do {
-                    try self.validator.validate(value, errorPrefix: self.errorPrefix)
+                    try self.validator.validate(value)
                     return [String]()
                 } catch let error as ValidationError {
                     return error.errors
@@ -93,14 +87,12 @@ extension View {
     ///     - value: The value to evaluate.
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
     ///     - alignment: Alignment guide for the `VStack` that holds the content and errors.
-    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
     ///     - validator: A `Validator`, used to validate the value.
     ///     - builder: A view builder for when errors are generated.
     public func errorModifer<V, E>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
         alignment: HorizontalAlignment = .leading,
-        errorPrefix: String = "",
         validator: Validator<V>,
         @ViewBuilder _ builder: @escaping ([String]) -> E
     ) -> some View
@@ -111,7 +103,6 @@ extension View {
                 value: value,
                 shouldEvaluate: shouldEvaluate,
                 alignment: alignment,
-                errorPrefix: errorPrefix,
                 validator: validator,
                 errorView: builder
             )
@@ -134,13 +125,11 @@ extension View {
     ///     - value: The value to evaluate.
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
     ///     - alignment: Alignment guide for the `VStack` that holds the content and errors.
-    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
     ///     - validator: A `Validator`, used to validate the value.
     public func errorModifer<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
         alignment: HorizontalAlignment = .leading,
-        errorPrefix: String = "",
         validator: Validator<V>
     ) -> some View
     {
@@ -149,7 +138,6 @@ extension View {
                 value: value,
                 shouldEvaluate: shouldEvaluate,
                 alignment: alignment,
-                errorPrefix: errorPrefix,
                 validator: validator
             ) { errors in
                 ForEach(errors, id: \.self) {
@@ -178,13 +166,11 @@ extension View {
     ///     - value: The value to validate.
     ///     - shouldEvaluate: A binding that tells us when it's ok to evaluate the value.
     ///     - alignment: Alignment guide for the `VStack` that holds the content and errors.
-    ///     - errorPrefix:  Prefix's errors with this value. (example: "Required:")
     ///     - validator: A trailing closure that returns a `Validator`, used to validate the value.
     public func errorModifer<V>(
         value: Binding<V>,
         shouldEvaluate: Binding<Bool> = .constant(true),
         alignment: HorizontalAlignment = .leading,
-        errorPrefix: String = "",
         validator: @escaping () -> Validator<V>
     ) -> some View
     {
@@ -192,7 +178,6 @@ extension View {
             value: value,
             shouldEvaluate: shouldEvaluate,
             alignment: alignment,
-            errorPrefix: errorPrefix,
             validator: validator()
         )
     }

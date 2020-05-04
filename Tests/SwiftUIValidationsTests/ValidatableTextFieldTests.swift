@@ -16,9 +16,11 @@ struct ContentView: View, Inspectable {
             // Can't test the error modifier because we can't enter the field.
             ValidatingTextField("Name", text: $text, validator: !.empty)
 
-            // Trailing closure
-            ValidatingTextField("Name", text: $text, alwaysEvaluate: true) {
-                !.empty
+            // Custom error view builder.
+            ValidatingTextField("name", text: $text, validator: !.empty) { errors in
+                ForEach(errors, id: \.self) {
+                    Text($0)
+                }
             }
 
             // This should always evaluate.

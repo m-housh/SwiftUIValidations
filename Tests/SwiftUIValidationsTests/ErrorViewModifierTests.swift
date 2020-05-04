@@ -17,8 +17,8 @@ final class ErrorViewModifier2Tests: XCTestCase {
         var sut = ErrorViewModifier(
             value: .constant(""),
             shouldEvaluate: .constant(true),
-            errorPrefix: "Required:",
-            validator: !.empty
+//            errorPrefix: "Required:",
+            validator: .prefix("Required: ", !.empty)
         ) { errors in
             ForEach(errors, id: \.self) {
                 Text($0)

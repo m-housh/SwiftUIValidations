@@ -18,21 +18,25 @@ public struct Validator<T> {
     /// The validation method.
     private let closure: (T) throws -> Void
 
-    init(errorText: String, inverseErrorText: String, _ closure: @escaping (T) throws -> Void) {
+    /// Create a new validator.
+    ///
+    /// - Parameters:
+    ///     - errorText: The error text for the validator.
+    ///     - inverseErrorText: The inverse error text for the validator, used by the `!` operator.
+    ///     - closure: The method used to validate the data. Throwing a`ValidationError` on failure to validate.
+    public init(errorText: String, inverseErrorText: String, _ closure: @escaping (T) throws -> Void) {
         self.errorText = errorText
         self.inverseErrorText = inverseErrorText
         self.closure = closure
     }
 
-    func validate(_ data: T, errorPrefix: String = "") throws {
-        do {
-            try closure(data)
-        } catch let error as ValidationError {
-            guard !errorPrefix.isEmpty else {
-                throw error
-            }
-            let errors = error.errors.map { "\(errorPrefix) \($0)" }
-            throw BasicValidationError(errors)
-        }
+    /// Validate an item.
+    ///
+    /// - Parameters:
+    ///     - data: The item to validate.
+    ///
+    /// - Throws: ValidationError: When validation fails.
+    public func validate(_ data: T) throws {
+        try closure(data)
     }
 }

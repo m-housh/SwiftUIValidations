@@ -19,10 +19,18 @@ public struct BasicValidationError: ValidationError {
 
     public var errors: [String]
 
+    /// Create a new error.
+    ///
+    /// - Parameters:
+    ///     - errors: The validation error texts.
     init(_ errors: [String]) {
         self.errors = errors
     }
 
+    /// Create a new error.
+    ///
+    /// - Parameters:
+    ///     - error: The validation error text.
     init(_ error: String) {
         self.errors = [error]
     }

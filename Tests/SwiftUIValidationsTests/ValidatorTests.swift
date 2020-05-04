@@ -295,9 +295,9 @@ final class ValidatorTests: XCTestCase {
     }
 
     func test_Validator_validate_with_error_prefix() throws {
-        let validator: Validator<String> = .email
+        let validator: Validator<String> = .prefix("Required: ", .email)
 
-        try validateErrors(value: "invalid", validator: validator, errorPrefix: "Required:") { errors in
+        try validateErrors(value: "invalid", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
             XCTAssertEqual(errors.first, "Required: invalid email")
         }
@@ -312,6 +312,40 @@ final class ValidatorTests: XCTestCase {
             XCTAssertEqual(errors.first, "invalid url")
         }
     }
+
+    func test_Prefix_Validator() throws {
+        let validator1: Validator<String> = .prefix("Required: ", .email)
+        let validator2: Validator<String> = .prefix("Required: ") {
+            .email
+        }
+        let validators = [validator1, validator2]
+
+        for validator in validators {
+            XCTAssertNoThrow(try validator.validate("foo@bar.com"))
+        }
+
+        for validator in validators {
+            try validateErrors(value: "invalid", validator: validator) { errors in
+                XCTAssertEqual(errors.count, 1)
+                XCTAssertEqual(errors.first, "Required: invalid email")
+            }
+        }
+    }
+
+    func test_Custom_Validator() throws {
+        let validator1: Validator<String> = .custom("Custom", !.empty)
+        let validator2: Validator<String> = .custom("Custom") { !.empty }
+        let validators = [validator1, validator2]
+
+        for validator in validators {
+            XCTAssertNoThrow(try validator.validate("foo"))
+            try validateErrors(value: "", validator: validator) { errors in
+                XCTAssertEqual(errors.count, 1)
+                XCTAssertEqual(errors.first, "Custom")
+            }
+        }
+
+    }
 }
 
 // MARK: - Helpers
@@ -319,11 +353,10 @@ extension ValidatorTests {
 
     func validateErrors<T>(
         value: T, validator: Validator<T>,
-        errorPrefix: String = "",
         _ callback: ([String]) -> Void) throws
     {
         do {
-            try validator.validate(value, errorPrefix: errorPrefix)
+            try validator.validate(value)
         } catch let error as ValidationError {
             callback(error.errors)
         }
