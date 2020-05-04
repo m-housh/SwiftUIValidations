@@ -91,7 +91,7 @@ public struct ValidatingTextField<ErrorView>: View where ErrorView: View {
 }
 
 // MARK: - Default Error View
-extension ValidatingTextField where ErrorView == ForEach<[String], String, AnyView> {
+extension ValidatingTextField where ErrorView == MultiErrorView {
 
     /// Create a new validatable text field.
     ///
@@ -117,13 +117,8 @@ extension ValidatingTextField where ErrorView == ForEach<[String], String, AnyVi
             onEditingChanged: onEditingChanged,
             onCommit: onCommit,
             validator: validator
-        ) { errors in
-            ForEach(errors, id: \.self) {
-                AnyView(
-                    Text($0.capitalized)
-                        .modifier(ErrorTextModifier())
-                )
-            }
+        ) {
+            MultiErrorView($0)
         }
     }
 }

@@ -140,10 +140,7 @@ extension View {
                 alignment: alignment,
                 validator: validator
             ) { errors in
-                ForEach(errors, id: \.self) {
-                    Text($0.capitalized)
-                        .modifier(ErrorTextModifier())
-                }
+                MultiErrorView(errors)
             }
         )
     }

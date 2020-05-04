@@ -41,6 +41,22 @@ final class ValidatableTextFieldTests: XCTestCase {
         XCTAssertEqual(groupCount, 0)
     }
 
+    func test_MultiErrorView_displays_multiple_errors() throws {
+        let sut = MultiErrorView(["foo", "bar"])
+        let forEach = try sut.inspect().forEach()
+        XCTAssertEqual(forEach.count, 2)
+
+        let shouldBeFoo = try forEach.text(0).string()
+        let shouldBeBar = try forEach.text(1).string()
+
+        XCTAssertEqual(shouldBeFoo, "Foo")
+        XCTAssertEqual(shouldBeBar, "Bar")
+    }
+
+    func test_String_capitalizedFirstLetter() {
+        XCTAssertEqual("foo bar".capitalizedFirstLetter(), "Foo bar")
+    }
+
     static var allTests = [
         ("test_TestContentView_text_changes", test_TestContentView_text_changes)
     ]
@@ -128,3 +144,4 @@ struct SingleErrorViewContent: View, Inspectable {
 }
 
 extension SingleErrorView: Inspectable { }
+extension MultiErrorView: Inspectable { }

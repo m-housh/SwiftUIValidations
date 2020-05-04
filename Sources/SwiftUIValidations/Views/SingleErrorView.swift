@@ -45,10 +45,10 @@ public struct SingleErrorView: View {
     public var body: some View {
         Group {
             if displayError == .first && errors.first != nil {
-                Text(errors.first!.capitalized)
+                Text(errors.first!.capitalizedFirstLetter())
                     .modifier(ErrorTextModifier())
             } else if errors.last != nil {
-                Text(errors.last!.capitalized)
+                Text(errors.last!.capitalizedFirstLetter())
                     .modifier(ErrorTextModifier())
             }
         }
