@@ -13,6 +13,8 @@ extension Validator where T: OptionalType {
     ///
     ///     let validator: Validator<Int?> = !.nil
     ///
+    /// - errorText: `nil`
+    /// - inverseErrorText: `not nil`
     public static var `nil`: Validator<T.WrappedType?> {
         return NilValidator(T.WrappedType.self).validator()
     }

@@ -13,6 +13,8 @@ extension Validator where T: Collection {
     ///
     ///         let validator = Validator<String>.empty
     ///
+    /// - errorText: `empty`
+    /// - inverseErrorText: `not empty`
     public static var empty: Validator<T> {
         EmptyValidator().validator()
     }

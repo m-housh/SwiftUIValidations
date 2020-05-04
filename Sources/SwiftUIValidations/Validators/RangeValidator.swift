@@ -13,6 +13,7 @@ extension Validator where T: Comparable {
     ///
     ///     let validator = Validator<Int>.range(5...10)
     ///
+    /// - errorText: `range: between 5 and 10`
     public static func range(_ range: ClosedRange<T>) -> Validator<T> {
         RangeValidator(.closedRange(min: range.lowerBound, max: range.upperBound)).validator()
     }
@@ -21,6 +22,7 @@ extension Validator where T: Comparable {
     ///
     ///     let validator = Validator<Int>.range(...10)
     ///
+    /// - errorText: `range: at most 10`
     public static func range(_ range: PartialRangeThrough<T>) -> Validator<T> {
         RangeValidator(.partialRangeMax(max: range.upperBound)).validator()
     }
@@ -29,6 +31,7 @@ extension Validator where T: Comparable {
     ///
     ///     let validator = Validator<Int>.range(5...)
     ///
+    /// - errorText: `range: at least 5`
     public static func range(_ range: PartialRangeFrom<T>) -> Validator<T> {
         RangeValidator(.partialRangeMin(min: range.lowerBound)).validator()
     }
@@ -40,6 +43,7 @@ extension Validator where T: Comparable & Strideable {
     ///
     ///     let validator = Validator<Int>.range(5..<10)
     ///
+    /// - errorText: `range: between 5 and 9`
     public static func range(_ range: Range<T>) -> Validator<T> {
         RangeValidator(.range(min: range.lowerBound, max: range.upperBound.advanced(by: -1))).validator()
     }

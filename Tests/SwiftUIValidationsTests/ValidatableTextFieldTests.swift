@@ -18,8 +18,10 @@ struct ContentView: View, Inspectable {
 
             // Custom error view builder.
             ValidatingTextField("name", text: $text, validator: !.empty) { errors in
-                ForEach(errors, id: \.self) {
-                    Text($0)
+                Group {
+                    if errors.first != nil {
+                        Text(errors.first!)
+                    }
                 }
             }
 

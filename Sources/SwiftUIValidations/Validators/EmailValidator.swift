@@ -13,6 +13,8 @@ extension Validator where T == String {
     ///
     ///     let validator = Validator<String>.email
     ///
+    /// - errorText: `invalid email`
+    /// - inverseErrorText: `valid email`
     public static var email: Validator<String> {
         EmailValidator().validator()
     }

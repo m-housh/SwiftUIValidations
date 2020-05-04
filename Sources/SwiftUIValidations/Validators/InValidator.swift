@@ -12,6 +12,8 @@ extension Validator where T: Equatable {
     ///
     ///     let validator = Validator<String>.in("foo", "bar")
     ///
+    /// - errorText: `in: ("foo", "bar")`
+    /// - inverseErrorText: `not in: ("foo", "bar")`
     public static func `in`(_ array: T...) -> Validator<T> {
         return .in(array)
     }
@@ -20,6 +22,8 @@ extension Validator where T: Equatable {
     ///
     ///     let validator = Validator<String>.in(["foo", "bar"])
     ///
+    /// - errorText: `in: ("foo", "bar")`
+    /// - inverseErrorText: `not in: ("foo", "bar")`
     public static func `in`(_ array: [T]) -> Validator<T> {
         return InValidator(array).validator()
     }

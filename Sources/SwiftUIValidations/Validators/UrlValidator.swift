@@ -19,6 +19,8 @@ extension Validator where T == String {
     /// This validator will allow either file URLs, or URLs
     /// containing at least a scheme and a host.
     ///
+    /// - errorText: `invalid url`
+    /// - inverseErrorText: `valid url`
     public static var url: Validator<T> {
         return URLValidator().validator()
     }

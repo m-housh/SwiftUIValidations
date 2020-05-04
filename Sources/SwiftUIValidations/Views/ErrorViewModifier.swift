@@ -141,9 +141,8 @@ extension View {
                 validator: validator
             ) { errors in
                 ForEach(errors, id: \.self) {
-                    Text($0)
-                        .font(.callout)
-                        .foregroundColor(.red)
+                    Text($0.capitalized)
+                        .modifier(ErrorTextModifier())
                 }
             }
         )

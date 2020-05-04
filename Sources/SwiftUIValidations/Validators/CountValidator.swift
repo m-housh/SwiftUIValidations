@@ -12,6 +12,8 @@ extension Validator where T: Collection {
     ///
     ///     let validator = Validator<String>.count(5...10)
     ///
+    /// - errorText: where T == String: `count: between 5 and 10 characters`
+    /// - errorText: where T: Collection: `count: between 5 and 10 items`
     public static func count(_ range: ClosedRange<Int>) -> Validator<T> {
         CountValidator(RangeType<Int>.closedRange(min: range.lowerBound, max: range.upperBound)).validator()
     }
@@ -20,6 +22,8 @@ extension Validator where T: Collection {
     ///
     ///     let validator = Validator<String>.count(...10)
     ///
+    /// - errorText: where T == String: `count: at most 10 characters`
+    /// - errorText: where T: Collection: `count: at most 10 items`
     public static func count(_ range: PartialRangeThrough<Int>) -> Validator<T> {
         CountValidator(RangeType<Int>.partialRangeMax(max: range.upperBound)).validator()
     }
@@ -28,6 +32,8 @@ extension Validator where T: Collection {
     ///
     ///     let validator = Validator<String>.count(5...)
     ///
+    /// - errorText: where T == String: `count: at least 5 characters`
+    /// - errorText: where T: Collection: `count: at least 5 items`
     public static func count(_ range: PartialRangeFrom<Int>) -> Validator<T> {
         CountValidator(RangeType<Int>.partialRangeMin(min: range.lowerBound)).validator()
     }
@@ -36,6 +42,8 @@ extension Validator where T: Collection {
     ///
     ///     let validator = Validator<String>.count(5..<10)
     ///
+    /// - errorText: where T == String: `count: between 5 and 9 characters`
+    /// - errorText: where T: Collection: `count: between 5 and 9 items`
     public static func count(_ range: Range<Int>) -> Validator<T> {
         CountValidator(RangeType<Int>.range(min: range.lowerBound, max: range.upperBound.advanced(by: -1))).validator()
     }
