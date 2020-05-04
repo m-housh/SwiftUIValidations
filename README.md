@@ -35,19 +35,23 @@ struct ContentView: View {
     var body: some View {
         Form {
         
-            // Error texts would be `["Required: not empty", "Required: at least 5 characters"]`
-            ValidatingTextField("Name", text: $nameText, validator: .prefix("Required: ", !.empty && .count(5...)))
+            Section(header: Text("Name")) {
+                // Error texts would be `["Required: not empty", "Required: at least 5 characters"]`
+                ValidatingTextField("Name", text: $nameText, validator: .prefix("Required: ", !.empty && .count(5...)))
+            }
             
-            // Hook in and create custom error view, only showing the first error.
-            //
-            // Error texts would be `["Required", "invalid email"]`
-            ValidatingTextField("Email", text: $emailText, validator: .custom("Required", !.empty) && .email) { errors in 
-                Group {
-                    // Only show the first error.
-                    if errors.first != nil {
-                        Text(errors.first!.capitalized)
-                            .modifier(ErrorTextModifier()) 
-                            // add default style, font = .callout, foregroundColor = .red
+            Section(header: Text("Email")) {
+                // Hook in and create custom error view, only showing the first error.
+                //
+                // Error texts would be `["Required", "invalid email"]`
+                ValidatingTextField("Email", text: $emailText, validator: .custom("Required", !.empty) && .email) { errors in 
+                    Group {
+                        // Only show the first error.
+                        if errors.first != nil {
+                            Text(errors.first!.capitalized)
+                                .modifier(ErrorTextModifier()) 
+                                // add default style, font = .callout, foregroundColor = .red
+                        }
                     }
                 }
             }
@@ -86,7 +90,7 @@ struct MyValidatableView: View {
     // You can also hook into and customize the error view used.
     private var errorView2: some View {
         Text("")
-            .errorModifier(value: $value, shouldEvaluate: $shouldEvaluate, validator: !.empty) { errors in  
+            .errorModifier(value: $value, shouldEvaluate: $shouldEvaluate, validator: !.empty && .email) { errors in  
                 Group {
                     // Only show the first error.
                     if errors.first != nil {
