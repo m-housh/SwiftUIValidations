@@ -34,9 +34,13 @@ struct ContentView: View {
     
     var body: some View {
         Form {
+        
+            // Error text would be `Required: not empty`
             ValidatingTextField("Name", text: $nameText, validator: .prefix("Required: ", !.empty && .count(5...)))
             
             // Hook in and create custom error view, only showing the first error.
+            //
+            // Error texts would be `["Required", "invalid email"]`
             ValidatingTextField("Email", text: $emailText, validator: .custom("Required", !.empty) && .email) { errors in 
                 Group {
                     // Only show the first error.
