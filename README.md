@@ -35,7 +35,7 @@ struct ContentView: View {
     var body: some View {
         Form {
         
-            // Error text would be `Required: not empty`
+            // Error texts would be `["Required: not empty", "Required: at least 5 characters"]`
             ValidatingTextField("Name", text: $nameText, validator: .prefix("Required: ", !.empty && .count(5...)))
             
             // Hook in and create custom error view, only showing the first error.

@@ -62,7 +62,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "12", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: at least 3 characters")
+            XCTAssertEqual(errors.first, "at least 3 characters")
         }
     }
 
@@ -72,12 +72,12 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "12", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: between 3 and 5 characters")
+            XCTAssertEqual(errors.first, "between 3 and 5 characters")
         }
 
         try validateErrors(value: "123456", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: between 3 and 5 characters")
+            XCTAssertEqual(errors.first, "between 3 and 5 characters")
         }
     }
 
@@ -92,7 +92,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "123456", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: at most 5 characters")
+            XCTAssertEqual(errors.first, "at most 5 characters")
         }
     }
 
@@ -102,12 +102,12 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "12", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: between 3 and 4 characters")
+            XCTAssertEqual(errors.first, "between 3 and 4 characters")
         }
 
         try validateErrors(value: "12345", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: between 3 and 4 characters")
+            XCTAssertEqual(errors.first, "between 3 and 4 characters")
         }
     }
 
@@ -117,7 +117,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: ["foo"], validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: between 2 and 5 items")
+            XCTAssertEqual(errors.first, "between 2 and 5 items")
         }
     }
 
@@ -127,7 +127,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: ["foo", "bar"], validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: between 0 and 1 item")
+            XCTAssertEqual(errors.first, "between 0 and 1 item")
         }
     }
 
@@ -137,7 +137,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "foo", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "count: between 0 and 1 character")
+            XCTAssertEqual(errors.first, "between 0 and 1 character")
         }
     }
 
@@ -147,7 +147,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: 1, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "range: at least 3")
+            XCTAssertEqual(errors.first, "at least 3")
         }
     }
 
@@ -157,12 +157,12 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: 10, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "range: between 3 and 5")
+            XCTAssertEqual(errors.first, "between 3 and 5")
         }
 
         try validateErrors(value: 1, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "range: between 3 and 5")
+            XCTAssertEqual(errors.first, "between 3 and 5")
         }
     }
 
@@ -177,7 +177,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: 6, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "range: at most 5")
+            XCTAssertEqual(errors.first, "at most 5")
         }
     }
 
@@ -187,12 +187,12 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: 1, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "range: between 3 and 4")
+            XCTAssertEqual(errors.first, "between 3 and 4")
         }
 
         try validateErrors(value: 5, validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "range: between 3 and 4")
+            XCTAssertEqual(errors.first, "between 3 and 4")
         }
     }
 
@@ -203,7 +203,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "not foo", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first, "in: (foo, bar)")
+            XCTAssertEqual(errors.first, "in (foo, bar)")
         }
     }
 
@@ -214,7 +214,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "_", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first!, "contains an invalid character: '_' (allowed: A-Z, a-z, 0-9)")
+            XCTAssertEqual(errors.first!, "invalid character: '_' (allowed: A-Z, a-z, 0-9)")
         }
     }
 
@@ -226,7 +226,7 @@ final class ValidatorTests: XCTestCase {
         let string = String("😂")
         try validateErrors(value: "\(string)", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first!, "contains an invalid character: '😂'")
+            XCTAssertEqual(errors.first!, "invalid character: '😂'")
         }
     }
 
@@ -238,7 +238,7 @@ final class ValidatorTests: XCTestCase {
 
         try validateErrors(value: "_", validator: validator) { errors in
             XCTAssertEqual(errors.count, 1)
-            XCTAssertEqual(errors.first!, "contains an invalid character: '_' (allowed: whitespace, A-Z, a-z, 0-9)")
+            XCTAssertEqual(errors.first!, "invalid character: '_' (allowed: whitespace, A-Z, a-z, 0-9)")
         }
     }
 

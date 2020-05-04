@@ -11,7 +11,7 @@ extension Validator {
 
     /// Add a prefix string to a validator.
     ///
-    ///     let validator: Validator<String> = .prefixed("Required: ", .email)
+    ///     let validator: Validator<String> = .prefix("Required: ", .email)
     ///     // The error text would be "Required: invalid email"
     ///
     ///
@@ -24,7 +24,7 @@ extension Validator {
 
     /// Add a prefix string to a validator.
     ///
-    ///     let validator: Validator<String?> = .prefixed("Required: ") {
+    ///     let validator: Validator<String?> = .prefix("Required: ") {
     ///         .email
     ///     }
     ///     // The error text would be "Required: invalid email"

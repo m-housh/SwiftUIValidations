@@ -13,6 +13,7 @@ extension Validator where T == String {
     ///
     ///     let validator = Validator<String>.ascii
     ///
+    /// - errorText: `invalid character: '😂'`
     public static var ascii: Validator<String> {
         return .characterSet(.ascii)
     }
@@ -21,6 +22,7 @@ extension Validator where T == String {
     ///
     ///     let validator = Validator<String>.alphanumeric
     ///
+    /// - errorText: `invalid character: '_' (allowed: A-Z, a-z, 0-9)`
     public static var alphanumeric: Validator<String> {
         return .characterSet(.alphanumerics)
     }
@@ -29,6 +31,9 @@ extension Validator where T == String {
     ///
     ///     let validator = Validator<String>.characterSet(.alphanumerics + .whitespaces)
     ///
+    /// Error text will depend on what charcters sets are included.
+    /// 
+    /// - errorText: `invalid character: '_' (allowed: whitespace, A-Z, a-z, 0-9)`
     public static func characterSet(_ characterSet: CharacterSet) -> Validator<String> {
         return CharacterSetValidator(characterSet).validator()
     }
@@ -67,7 +72,7 @@ private struct CharacterSetValidator: ValidatorType {
     /// See `Validator`
     public func validate(_ string: String) throws {
         if let range = string.rangeOfCharacter(from: characterSet.inverted) {
-            var reason = "contains an invalid character: '\(string[range])'"
+            var reason = "invalid character: '\(string[range])'"
             if !characterSet.traits.isEmpty {
                 reason += " \(errorText)"
             }
